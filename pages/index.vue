@@ -130,6 +130,7 @@ export default {
       position: relative;
       margin-right: 10px;
       border-radius: 2px;
+      border-bottom-left-radius: 0;
       &:after {
         content: "";
         position: absolute;
@@ -153,6 +154,7 @@ export default {
     border-radius: 4px;
     border: none;
     outline: none;
+    border-top-left-radius: 0;
   }
 }
 .searchInform{
