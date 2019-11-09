@@ -63,7 +63,6 @@ export default {
         },
         {
           name: "机票",
-          placeholder: "搜索机票"
         }
       ],
       current: 0
@@ -74,6 +73,12 @@ export default {
     handleClick(index) {
       // console.log("点击了" + index);
       this.current = index;
+      const item = this.tabList[index];
+      if(item.name === '机票'){
+        this.$router.push({
+          path:'/air'
+        })
+      }
     }
   },
   mounted() {
