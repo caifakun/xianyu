@@ -53,6 +53,9 @@ export default {
             // vuex不能直接修改store的值
             // 调用mutations下的方法修改userInfo,调用时候传入res.data
             this.$store.commit('user/setUserInfo',res.data);
+            this.$router.push({
+              path:'/' //登录成功后跳转主页
+            })
           })
         //   这里用于捕捉失败
         //   .catch(res=>{
