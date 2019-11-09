@@ -49,7 +49,7 @@ export default {
             method: "post",
             data: this.form
           }).then(res => {
-            console.log(res.data);
+            // console.log(res.data);
             // vuex不能直接修改store的值
             // 调用mutations下的方法修改userInfo,调用时候传入res.data
             this.$store.commit('user/setUserInfo',res.data);

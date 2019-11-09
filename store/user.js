@@ -10,6 +10,7 @@ export const state = {
 export const mutations = {
     setUserInfo(state,data){
         state.userInfo = data
+        return state.userInfo //解决警告的问题
     }
 }
 // actions是用于异步修改state的数据

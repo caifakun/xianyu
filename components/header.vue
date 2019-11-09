@@ -48,7 +48,10 @@
 export default {
   methods: {
     // 用户退出
-    handleLogout() {}
+    handleLogout() {
+        // 把仓库store中user的方法setUserInfo传入的数据 赋值为空
+       this.$store.commit('user/setUserInfo','');
+    }
   }
 };
 </script>
