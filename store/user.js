@@ -16,9 +16,9 @@ export const mutations = {
     // 清楚userInfo
     clearUserInfo(state,data){
         if(process.browser){
-            localStorage.removeItem('userInfo')
+            localStorage.removeItem('userInfo')     
         }
-        state.userInfo = data 
+        return state.userInfo = data 
     }
 }
 // actions是用于异步修改state的数据
