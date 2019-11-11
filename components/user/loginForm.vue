@@ -39,9 +39,9 @@ export default {
   },
   methods: {
     // 提交登录
-    handleLoginSubmit() {
+    async handleLoginSubmit() {
       // 在这里调用 actions的方法，this.$store.dispatch
-      this.$store.dispatch('user/login',this.form);
+      await this.$store.dispatch('user/login',this.form);
       //登录成功后跳转主页
       this.$router.replace('/');
       // 进行提示
