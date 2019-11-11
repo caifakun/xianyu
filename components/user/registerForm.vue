@@ -7,7 +7,7 @@
     <el-form-item class="form-item" prop="captcha">
       <el-input placeholder="验证码" v-model="form.captcha">
         <template slot="append">
-          <el-button @click="handleSendCaptcha(form.captcha)">发送验证码</el-button>
+          <el-button @click="handleSendCaptcha()">发送验证码</el-button>
         </template>
       </el-input>
     </el-form-item>
@@ -31,12 +31,23 @@
 <script>
 export default {
   data() {
+    // 这里是elemen-ui自定义验证规则---确认密码
+    // 确认密码
+    const validatePass = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请再次输入密码"));
+      } else if (value !== this.form.password) {
+        callback(new Error("两次输入密码不一致!"));
+      } else {
+        callback();
+      }
+    };
     return {
       // 表单数据
       form: {
         username: "", //进行用户名数据绑定
         password: "", //进行密码数据绑定
-        checkPassword:"",//进行确认密码数据绑定
+        checkPassword: "", //进行确认密码数据绑定
         captcha: "", // 进行验证码绑定
         nickname: "" //进行验昵称绑定
       },
@@ -44,33 +55,26 @@ export default {
       rules: {
         // 验证用户名
         username: [
-          { required: true, message: "请输入用户名/手机", trigger: "blur" }
-          //   { min: 11, max: 11, trigger: "blur" }  这个是验证位数
+          { required: true, message: "请输入用户名/手机", trigger: "blur" },
+            { min: 11, max: 11, trigger: "blur" }  //这个是验证位数
         ],
         // 验证码
-        captcha:[
-            {required: true, message: "请输入验证码", trigger: "blur"},
-            { min: 4, max: 4, trigger: "blur" } 
-        ],
+        captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }],
         // 验证昵称
-        nickname:[
-             {required: true, message: "请输入你的昵称", trigger: "blur"},
+        nickname: [
+          { required: true, message: "请输入你的昵称", trigger: "blur" }
         ],
         // 验证密码
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        checkPassword:[{ required: true, message: "请再次确认你的密码", trigger: "blur" }]
+        // 确认密码
+        checkPassword: [{ validator: validatePass, trigger: "blur" }]
       }
     };
+    
   },
   methods: {
-    // 发送验证码
-    handleSendCaptcha(num){
-        console.log('发送了验证码为：'+ num);  
-    },
     // 提交登录
-    handleRegisterSubmit() {
-        // if()
-    }
+    handleRegisterSubmit() {}
   }
 };
 </script>
