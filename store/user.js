@@ -15,23 +15,11 @@ export const mutations = {
     },
     // 清楚userInfo
     clearUserInfo(state,data){
+        if(process.browser){
+            localStorage.removeItem('userInfo')     
+        }
         return state.userInfo = data 
     }
 }
 // actions是用于异步修改state的数据
-export const actions = {
-    login(store,data){
-        this.$axios({
-            url: "/accounts/login",
-            method: "post",
-            data,
-          }).then(res => {
-            // vuex不能直接修改store的值
-            // 调用mutations下的方法修改userInfo,调用时候传入res.data
-            // this.$store.commit('user/setUserInfo',res.data);
-
-            // 调用当前模块下的mutations是不需要加上模块名字的
-            store.commit('setUserInfo',res.data)
-        })
-    }
-}
+export const actions = {}
