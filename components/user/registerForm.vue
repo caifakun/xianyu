@@ -56,7 +56,7 @@ export default {
         // 验证用户名
         username: [
           { required: true, message: "请输入用户名/手机", trigger: "blur" },
-            { min: 11, max: 11, trigger: "blur" }  //这个是验证位数
+          { min: 11, max: 11, trigger: "blur" } //这个是验证位数
         ],
         // 验证码
         captcha: [{ required: true, message: "请输入验证码", trigger: "blur" }],
@@ -70,11 +70,10 @@ export default {
         checkPassword: [{ validator: validatePass, trigger: "blur" }]
       }
     };
-    
   },
   methods: {
     // 发送验证码
-   async handleSendCaptcha() {
+    async handleSendCaptcha() {
       // 这里的$confirm是element-ui弹窗提示方法
       // 判断如果用户名为空
       if (!this.form.username) {
@@ -96,20 +95,35 @@ export default {
       }
       // 这里的then就是promise的回调函数
       // this.$store.dispatch('user/sendCaptcha',this.form.username).then(code=>{
-        
+
       // })
-      
+
       //  await表示异步函数，等待this.$store.dispatch方法执行成功后  接收promise 返回来的code
-     const code =  await this.$store.dispatch('user/sendCaptcha',this.form.username);
+      const code = await this.$store.dispatch(
+        "user/sendCaptcha",
+        this.form.username
+      );
       // 成功后进行弹窗提示
       this.$confirm("验证码为：" + code, "提示", {
-          confirmButtonText: "确定", // 确定按钮
-          showCancelButton: false, // 隐藏取消按钮
-          type: "warning"   //类型是 警告提示
-        });
+        confirmButtonText: "确定", // 确定按钮
+        showCancelButton: false, // 隐藏取消按钮
+        type: "warning" //类型是 警告提示
+      });
     },
     // 提交登录
-    handleRegisterSubmit() {}
+    handleRegisterSubmit() {
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          // 这里是结构，把checkPassword从this.form中移除
+          const { checkPassword, ...props } = this.form;
+          await this.$store.dispatch("user/register", props);
+          //注册成功后跳转主页
+          this.$router.replace("/");
+          // 进行提示
+          this.$message.success("注册成功");
+        }
+      });
+    }
   }
 };
 </script>
