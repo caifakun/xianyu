@@ -73,6 +73,44 @@ export default {
     
   },
   methods: {
+    // 发送验证码
+    handleSendCaptcha() {
+      // 这里的$confirm是element-ui弹窗提示方法
+      // 判断如果用户名为空
+      if (!this.form.username) {
+        this.$confirm("手机号不能为空", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+        return;
+      }
+      // 如果手机号的长度不是11位
+      if (this.form.username.length !== 11) {
+        this.$confirm("手机号码格式错误", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+        return;
+      }
+      // 如果满足条件，发送请求 进行短信验证
+      this.$axios({
+        url: "/captchas",
+        method: "post",
+        data: {
+          tel: this.form.username
+        }
+      }).then(res => {
+        console.log(res.data);
+        const { code } = res.data;
+        this.$confirm("验证码为：" + code, "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "warning"
+        });
+      });
+    },
     // 提交登录
     handleRegisterSubmit() {}
   }
