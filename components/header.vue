@@ -49,12 +49,12 @@ export default {
   methods: {
     // 用户退出
     handleLogout() {
-        // 把仓库store中user的方法setUserInfo传入的数据 赋值为空
-       this.$store.commit('user/clearUserInfo',{});
-        this.$message({
-          message: '退出成功',
-          type: 'success'
-        });
+      // 把仓库store中user的方法setUserInfo传入的数据 赋值为空
+      this.$store.commit('user/clearUserInfo',{});
+      this.$message({
+        message: '退出成功',
+        type: 'success'
+      });
     }
   }
 };
