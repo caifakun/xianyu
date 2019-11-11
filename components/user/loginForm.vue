@@ -40,29 +40,12 @@ export default {
   methods: {
     // 提交登录
     handleLoginSubmit() {
-      // 发送ajax请求登录时候，先判断表单信息
-      this.$refs.form.validate(valid => {
-        //   如果valid为ture
-        if (valid) {
-          this.$axios({
-            url: "/accounts/login",
-            method: "post",
-            data: this.form
-          }).then(res => {
-            // console.log(res.data);
-            // vuex不能直接修改store的值
-            // 调用mutations下的方法修改userInfo,调用时候传入res.data
-            this.$store.commit('user/setUserInfo',res.data);
-            this.$router.push({
-              path:'/' //登录成功后跳转主页
-            })
-          })
-        //   这里用于捕捉失败
-        //   .catch(res=>{
-        //       console.log(res.response)
-        //   })
-        }
-      });
+      // 在这里调用 actions的方法，this.$store.dispatch
+      this.$store.dispatch('user/login',this.form);
+      //登录成功后跳转主页
+      this.$router.replace('/');
+      // 进行提示
+      this.$message.success('登录成功');
     }
   }
 };
