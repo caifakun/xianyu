@@ -29,8 +29,8 @@ export default {
       rules: {
         // 验证用户名
         username: [
-          { required: true, message: "请输入用户名/手机", trigger: "blur" },
-        //   { min: 11, max: 11, trigger: "blur" }  这个是验证位数
+          { required: true, message: "请输入用户名/手机", trigger: "blur" }
+          //   { min: 11, max: 11, trigger: "blur" }  这个是验证位数
         ],
         // 验证密码
         password: [{ required: true, message: "请输入密码", trigger: "blur" }]
@@ -40,12 +40,14 @@ export default {
   methods: {
     // 提交登录
     async handleLoginSubmit() {
-      // 在这里调用 actions的方法，this.$store.dispatch
-      await this.$store.dispatch('user/login',this.form);
-      //登录成功后跳转主页
-      this.$router.replace('/');
-      // 进行提示
-      this.$message.success('登录成功');
+      try {
+        // 在这里调用 actions的方法，this.$store.dispatch
+        await this.$store.dispatch("user/login", this.form);
+        //登录成功后跳转主页
+        this.$router.replace("/");
+        // 进行提示
+        this.$message.success("登录成功");
+      } catch (error) {}
     }
   }
 };

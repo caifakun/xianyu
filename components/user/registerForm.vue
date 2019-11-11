@@ -114,13 +114,15 @@ export default {
     handleRegisterSubmit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
-          // 这里是结构，把checkPassword从this.form中移除
-          const { checkPassword, ...props } = this.form;
-          await this.$store.dispatch("user/register", props);
-          //注册成功后跳转主页
-          this.$router.replace("/");
-          // 进行提示
-          this.$message.success("注册成功");
+          try {
+            // 这里是结构，把checkPassword从this.form中移除
+            const { checkPassword, ...props } = this.form;
+            await this.$store.dispatch("user/register", props);
+            //注册成功后跳转主页
+            this.$router.replace("/");
+            // 进行提示
+            this.$message.success("注册成功");
+          } catch (error) {}
         }
       });
     }
