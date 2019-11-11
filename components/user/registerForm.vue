@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     // 发送验证码
-    handleSendCaptcha() {
+   async handleSendCaptcha() {
       // 这里的$confirm是element-ui弹窗提示方法
       // 判断如果用户名为空
       if (!this.form.username) {
@@ -94,22 +94,19 @@ export default {
         });
         return;
       }
-      // 如果满足条件，发送请求 进行短信验证
-      this.$axios({
-        url: "/captchas",
-        method: "post",
-        data: {
-          tel: this.form.username
-        }
-      }).then(res => {
-        console.log(res.data);
-        const { code } = res.data;
-        this.$confirm("验证码为：" + code, "提示", {
-          confirmButtonText: "确定",
-          showCancelButton: false,
-          type: "warning"
+      // 这里的then就是promise的回调函数
+      // this.$store.dispatch('user/sendCaptcha',this.form.username).then(code=>{
+        
+      // })
+      
+      //  await表示异步函数，等待this.$store.dispatch方法执行成功后  接收promise 返回来的code
+     const code =  await this.$store.dispatch('user/sendCaptcha',this.form.username);
+      // 成功后进行弹窗提示
+      this.$confirm("验证码为：" + code, "提示", {
+          confirmButtonText: "确定", // 确定按钮
+          showCancelButton: false, // 隐藏取消按钮
+          type: "warning"   //类型是 警告提示
         });
-      });
     },
     // 提交登录
     handleRegisterSubmit() {}
