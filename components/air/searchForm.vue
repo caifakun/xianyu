@@ -23,6 +23,7 @@
           @select="handleDepartSelect"
           class="el-autocomplete"
           v-model="form.departCity"
+          @blur="handleDepartBlur(form.departCity)"
         ></el-autocomplete>
       </el-form-item>
       <el-form-item label="到达城市">
@@ -32,6 +33,7 @@
           @select="handleDestSelect"
           class="el-autocomplete"
           v-model="form.destCity"
+          @blur="handleDestBlur(form.destCity)"
         ></el-autocomplete>
       </el-form-item>
       <el-form-item label="出发时间">
@@ -71,7 +73,7 @@ export default {
         departDate: "" // 日期字符串
       },
       departCities: [], //用于存储搜索返回的出发城市
-      destCities:[] //用于存储搜索返回的到达城市
+      destCities: [] //用于存储搜索返回的到达城市
     };
   },
   methods: {
@@ -82,54 +84,101 @@ export default {
     },
 
     // 封装一个搜索返回城市列表的函数
-    getCities(value,cb,city){
+    getCities(value, cb, city) {
       // 出发城市输入框的输入事件，根据输入的关键字请求接口返回相关城市。
       // value: 是输入框的值
       // cb：是回调函数，调用函数时候必须要传入一个数组
       // cb参数的数组的元素必须是一个对象，对面里面必须包含value值
 
       // 判断如果为值为空的时候，不发送请求数据
-      if (!value.trim()){
+      if (!value.trim()) {
         return cb([]);
-      } 
-        // 获取拥有机票的城市
-        this.$axios({
-          url: "/airs/city",
-          method: "get",
-          params: {
-            name: value
-          }
-        }).then(res => {
-          console.log(res.data);
-          const { data } = res.data;
-          // 利用数组.map方法进行去重，会返回一个新数组
-          const newData = data.map(element => {
-            // 取出里面每项的name重新赋值给value
-            element.value = element.name.replace("市", "");
-            return element;
-          });
-          this.city = newData;
-          cb(this.city);
+      }
+      // 获取拥有机票的城市
+      this.$axios({
+        url: "/airs/city",
+        method: "get",
+        params: {
+          name: value
+        }
+      }).then(res => {
+        // console.log(res.data);
+        const { data } = res.data;
+        // 利用数组.map方法进行去重，会返回一个新数组
+        const newData = data.map(element => {
+          // 取出里面每项的name重新赋值给value
+          element.value = element.name.replace("市", "");
+          return element;
         });
+        this.city = newData;
+        cb(this.city);
+        // console.log(this.city);
+      });
     },
     // 出发城市输入框获得焦点时触发
     queryDepartSearch(value, cb) {
-      this.getCities(value,cb,this.departCities)
+      this.getCities(value, cb, this.departCities);
     },
 
     // 目标城市输入框获得焦点时触发
     // value 是选中的值，cb是回调函数，接收要展示的列表
     queryDestSearch(value, cb) {
       // cb([{ value: 1 }, { value: 2 }, { value: 3 }]);
-      this.getCities(value,cb,this.destCities);
+      this.getCities(value, cb, this.destCities);
     },
 
     // 出发城市下拉选择时触发
-    handleDepartSelect(item) {},
+    handleDepartSelect(item) {
+      this.form.departCity = item.value;
+      this.form.departCode = item.sort;
+    },
 
     // 目标城市下拉选择时触发
-    handleDestSelect(item) {},
-
+    handleDestSelect(item) {
+      this.form.destCity = item.value;
+      this.form.destCode = item.sort;
+    },
+    // 处理 出发城市 失去焦点时无法选中下拉框的值
+    handleDepartBlur(departCity) {
+      this.$axios({
+        url: "/airs/city",
+        method: "get",
+        params: {
+          name: departCity
+        }
+      }).then(res => {
+        // console.log(res.data);
+        const { data } = res.data;
+        const newData = data.map(element => {
+          // 取出里面每项的name重新赋值给value
+          element.value = element.name.replace("市", "");
+          return element;
+        });
+        this.departCities = newData;
+        this.form.departCity = this.departCities[0].value;
+        this.form.departCode = this.departCities[0].sort;
+      });
+    },
+    handleDestBlur(destCity) {
+      this.$axios({
+        url: "/airs/city",
+        method: "get",
+        params: {
+          name: destCity
+        }
+      }).then(res => {
+        // console.log(res.data);
+        const { data } = res.data;
+        const newData = data.map(element => {
+          // 取出里面每项的name重新赋值给value
+          element.value = element.name.replace("市", "");
+          return element;
+        });
+        this.destCities = newData;
+        this.form.destCity = this.destCities[0].value;
+        this.form.destCode = this.destCities[0].sort;
+      });
+    },
     // 确认选择日期时触发
     handleDate(value) {},
 
@@ -141,9 +190,7 @@ export default {
       console.log(this.form);
     }
   },
-  mounted() {
- 
-  }
+  mounted() {}
 };
 </script>
 
