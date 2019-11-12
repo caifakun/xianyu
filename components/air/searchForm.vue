@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import Moment from 'moment'
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -180,7 +182,10 @@ export default {
       });
     },
     // 确认选择日期时触发
-    handleDate(value) {},
+    handleDate(value) {
+      // moment是一个方法，可以传递时间Date对象。如果不传递参数就会获取当前的时间
+      this.form.departDate = moment(value).format('YYYY-MM-DD');
+    },
 
     // 触发和目标城市切换时触发
     handleReverse() {},
