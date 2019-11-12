@@ -57,8 +57,8 @@
 </template>
 
 <script>
-import Moment from 'moment'
-import moment from 'moment';
+import Moment from "moment";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -184,7 +184,7 @@ export default {
     // 确认选择日期时触发
     handleDate(value) {
       // moment是一个方法，可以传递时间Date对象。如果不传递参数就会获取当前的时间
-      this.form.departDate = moment(value).format('YYYY-MM-DD');
+      this.form.departDate = moment(value).format("YYYY-MM-DD");
     },
 
     // 触发和目标城市切换时触发
@@ -193,6 +193,32 @@ export default {
     // 提交表单是触发
     handleSubmit() {
       console.log(this.form);
+      // 跳转机票列表页之前先验证表单
+      const rules = [
+        { value: this.form.departCity, message: "请输入出发城市" },
+        { value: this.form.destCity, message: "请输入到达城市" },
+        { value: this.form.departDate, message: "请选择出发日期" }
+      ];
+      // 定义一个节流阀 用于控制表单的提示
+      let valid = true;
+      // 遍历验证规则数组里面的每个需要验证的信息
+      rules.forEach(e => {
+        // 只要有一个条件不满足，就终止循环
+        if (!valid) return;
+        // 如果有一个值为空
+        if (!e.value) {
+          // 提示错误
+          this.$alert(e.message, "提示");
+          valid = false;
+        }
+        // 只要有一个条件不满足，禁止跳转
+        if (!valid) return;
+        // 满足条件后进行跳转机票列表
+        this.$router.push({
+          path: "/air/flights",
+          query: this.form
+        });
+      });
     }
   },
   mounted() {}
