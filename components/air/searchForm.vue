@@ -44,6 +44,7 @@
           style="width: 100%;"
           @change="handleDate"
           v-model="form.departDate"
+          :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
       <el-form-item label>
@@ -75,7 +76,12 @@ export default {
         departDate: "" // 日期字符串
       },
       departCities: [], //用于存储搜索返回的出发城市
-      destCities: [] //用于存储搜索返回的到达城市
+      destCities: [], //用于存储搜索返回的到达城市
+      pickerOptions:{  
+        disabledDate(time) {  // 禁用日期
+          return time.getTime() < Date.now() - 3600*1000*24;
+        }
+      }
     };
   },
   methods: {
