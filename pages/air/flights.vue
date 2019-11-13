@@ -12,7 +12,7 @@
           <FlightsListHead />
 
           <!-- 航班信息 -->
-          <FlightsItem/>
+          <FlightsItem v-for="(item,index) in flightsList.flights" :key="index" :data="item"/>
         </div>
 
         <!-- 侧边栏 -->
@@ -38,8 +38,21 @@ export default {
     FlightsItem
   },
   data() {
-    return {};
-  }
+    return {
+      flightsList:{}
+    }
+  },
+  mounted() {
+    // 实例挂载完毕，根据搜索信息筛选出机票列表页
+    this.$axios({
+    url:'/airs',
+    method:'get',
+    params:this.$route.query
+    }).then(res=>{
+    console.log(res.data);   
+    this.flightsList = res.data  
+    })
+  },
 };
 </script>
 
