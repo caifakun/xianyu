@@ -13,7 +13,7 @@
               <span>{{data.org_airport_name}}{{data.org_airport_quay}}</span>
             </el-col>
             <el-col :span="8" class="flight-time">
-              <span>2时20分</span>
+              <span>{{rankTime}}</span>
             </el-col>
             <el-col :span="8" class="flight-airport">
               <strong>{{data.arr_time}}</strong>
@@ -60,7 +60,30 @@ export default {
   // },
   props:[
     "data"
-  ]
+  ],
+  computed: {
+    rankTime(){
+      // 如果接口没请求回来数据
+      if(!this.data.arr_time) return "";
+      // 出发的时间
+      const dep = this.data.dep_time.split(':');
+      // 到达的时间
+      const arr = this.data.arr_time.split(':');
+      // 分别把 出发的时间 和 到达的时间 转换成分钟
+      const start = dep[0]*60 + Number(dep[1]); //切割后存的是字符串，需要转换数据类型
+      const end = arr[0]*60 + Number(arr[1]); 
+      // 计算总共需要多少分钟
+      let time = end - start;  
+      if(time<0){
+        time = time +60*24
+      }
+      // 把分钟转换成小时
+      const hours = Math.floor(time/60);
+      // 计算需要多少分钟
+      const minutes = time%60; 
+      return hours +'时' + minutes +'分';
+    }
+  }
 };
 </script>
 
