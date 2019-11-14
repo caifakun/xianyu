@@ -12,7 +12,24 @@
           <FlightsListHead />
 
           <!-- 航班信息 -->
-          <FlightsItem v-for="(item,index) in flightsList.flights" :key="index" :data="item"/>
+          <FlightsItem v-for="(item,index) in flightsData" :key="index" :data="item" />
+          <!-- 分页 -->
+          <el-row type="flex" justify="center" style="margin-top:10px;">
+            <!-- size-change：切换条数时候触发 -->
+            <!-- current-change：选择页数时候触发 -->
+            <!-- current-page: 当前页数 -->
+            <!-- page-size：当前条数 -->
+            <!-- total：总条数 -->
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="pageIndex"
+              :page-sizes="[5, 10, 15, 20]"
+              :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="flightsList.total"
+            ></el-pagination>
+          </el-row>
         </div>
 
         <!-- 侧边栏 -->
@@ -28,8 +45,8 @@
 <script>
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
-import FlightsListHead from '@/components/air/flightsListHead.vue';
-import FlightsItem from '@/components/air/flightsItem.vue';
+import FlightsListHead from "@/components/air/flightsListHead.vue";
+import FlightsItem from "@/components/air/flightsItem.vue";
 export default {
   components: {
     Header,
@@ -39,20 +56,51 @@ export default {
   },
   data() {
     return {
-      flightsList:{}
+      flightsList: {
+        flights:[]
+      }, //飞机票列表
+      pageIndex:1, //页码数
+      pageSize:5 //每页的数据数
+    };
+  },
+  // 封装获取设置飞机分页的数据
+  computed:{
+    // 监听flightsData的变化
+    flightsData(){
+      const start = (this.pageIndex -1)*this.pageSize;    
+      const end = start + this.pageSize;
+      const arr = this.flightsList.flights.slice(start,end);
+      return arr 
+    } 
+  },
+  methods: {
+    // 封装获取机票列表页的函数
+    getFlightsList(){
+      this.$axios({
+        url: "/airs",
+        method: "get",
+        params: this.$route.query
+      }).then(res => {
+        console.log(res.data);
+        this.flightsList = res.data; //获取飞机票列表
+        // this.flightsData = this.flightsList.flights; 
+      });
+    },
+    
+    // 这里是处理 切换获取条数时
+    handleSizeChange(value){
+      this.pageSize = value;
+      this.pageIndex = 1;
+    },
+    // 这里是处理 切换页码数
+    handleCurrentChange(value){
+      this.pageIndex = value;
     }
   },
   mounted() {
     // 实例挂载完毕，根据搜索信息筛选出机票列表页
-    this.$axios({
-    url:'/airs',
-    method:'get',
-    params:this.$route.query
-    }).then(res=>{
-    console.log(res.data);   
-    this.flightsList = res.data  
-    })
-  },
+    this.getFlightsList(); 
+  }
 };
 </script>
 
