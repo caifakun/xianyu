@@ -112,6 +112,10 @@ export default {
     // 过滤航空公司
     setFlightsList(arr){
       this.flightsList.flights = arr;
+      // 修改数据的长度
+      this.flightsList.total = arr.length;
+      // 修改页面值，一旦进行过滤，显示第一页的数据先
+      this.pageIndex = 1;
       // console.log(this.flightsList.flights);    
     }
   },
