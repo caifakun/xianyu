@@ -230,6 +230,8 @@ export default {
       });
       // 只要有一个条件不满足，禁止跳转
       if (!valid) return;
+
+      this.$store.commit('air/setHistory',this.form)
       // 满足条件后进行跳转机票列表
       this.$router.push({
         path: "/air/flights",
