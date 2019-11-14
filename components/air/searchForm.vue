@@ -77,9 +77,10 @@ export default {
       },
       departCities: [], //用于存储搜索返回的出发城市
       destCities: [], //用于存储搜索返回的到达城市
-      pickerOptions:{  
-        disabledDate(time) {  // 禁用日期
-          return time.getTime() < Date.now() - 3600*1000*24;
+      pickerOptions: {
+        disabledDate(time) {
+          // 禁用日期
+          return time.getTime() < Date.now() - 3600 * 1000 * 24;
         }
       }
     };
@@ -202,7 +203,7 @@ export default {
       this.form.departCity = destCity;
       this.form.departCode = destCode;
       this.form.destCity = departCity;
-      this.form.destCode = departCode
+      this.form.destCode = departCode;
     },
 
     // 提交表单是触发
@@ -226,13 +227,13 @@ export default {
           this.$alert(e.message, "提示");
           valid = false;
         }
-        // 只要有一个条件不满足，禁止跳转
-        if (!valid) return;
-        // 满足条件后进行跳转机票列表
-        this.$router.push({
-          path: "/air/flights",
-          query: this.form
-        });
+      });
+      // 只要有一个条件不满足，禁止跳转
+      if (!valid) return;
+      // 满足条件后进行跳转机票列表
+      this.$router.push({
+        path: "/air/flights",
+        query: this.form
       });
     }
   },
