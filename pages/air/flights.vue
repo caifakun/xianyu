@@ -6,7 +6,7 @@
         <!-- 顶部过滤列表 -->
         <div class="flights-content">
           <!-- 过滤条件 -->
-          <FlightsFilters :data="flightsList"/>
+          <FlightsFilters :data="flightsList" @setCompany="setCompany"/>
           <!-- 航班头部布局 -->
           <FlightsListHead />
 
@@ -89,7 +89,6 @@ export default {
         // this.flightsData = this.flightsList.flights; 
       });
     },
-    
     // 这里是处理 切换获取条数时
     handleSizeChange(value){
       this.pageSize = value;
@@ -98,6 +97,12 @@ export default {
     // 这里是处理 切换页码数
     handleCurrentChange(value){
       this.pageIndex = value;
+    },
+    
+    // 过滤航空公司
+    setCompany(arr){
+      this.flightsList.flights = arr;
+      // console.log(this.flightsList.flights);    
     }
   },
   mounted() {

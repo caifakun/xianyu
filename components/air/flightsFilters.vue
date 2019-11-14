@@ -77,7 +77,15 @@ export default {
     handleFlightTimes(value) {},
 
     // 选择航空公司时候触发
-    handleCompany(value) {},
+    handleCompany(value) {
+      // 判断选择的 航空公司的名字 是否相等
+      // 如果是就把符合的返回
+     const arr =  this.data.flights.filter(v=>{
+        return v.airline_name == value;
+      })
+      // 然后通过自定义事件把返回来的数据 传到父组件去渲染
+      this.$emit('setCompany',arr)
+    },
 
     // 选择机型时候触发
     handleAirSize(value) {},
