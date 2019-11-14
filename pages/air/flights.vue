@@ -6,7 +6,7 @@
         <!-- 顶部过滤列表 -->
         <div class="flights-content">
           <!-- 过滤条件 -->
-          <FlightsFilters :data="flightsList" @setCompany="setCompany"/>
+          <FlightsFilters :data="dataList" @setCompany="setCompany"/>
           <!-- 航班头部布局 -->
           <FlightsListHead />
 
@@ -57,11 +57,18 @@ export default {
   },
   data() {
     return {
+      //飞机票列表
       flightsList: {
         flights:[], //设置一个空的数组,防止监听flightsList中的数组未请求回来时报错
         info:{}, //设置一个默认值，防止数据传递去子组件未请求回来之前报错
         options:{} //设置一个默认值，防止数据传递去子组件未请求回来之前报错
-      }, //飞机票列表
+      }, 
+       //缓存数据 用于过滤一次后进行再选择时，出现数据丢失的现象
+      dataList: {
+        flights:[], //设置一个空的数组,防止监听flightsList中的数组未请求回来时报错
+        info:{}, //设置一个默认值，防止数据传递去子组件未请求回来之前报错
+        options:{} //设置一个默认值，防止数据传递去子组件未请求回来之前报错
+      }, 
       pageIndex:1, //页码数
       pageSize:5 //每页的数据数
     };
@@ -85,8 +92,11 @@ export default {
         params: this.$route.query
       }).then(res => {
         console.log(res.data);
-        this.flightsList = res.data; //获取飞机票列表
-        // this.flightsData = this.flightsList.flights; 
+        const {data} = res;
+        //获取飞机票列表
+        this.flightsList = data; 
+        // 赋值给拷贝的新数据, 这份数据一旦赋值之后不能被修改
+        this.dataList = {...data}; 
       });
     },
     // 这里是处理 切换获取条数时
