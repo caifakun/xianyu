@@ -1,5 +1,5 @@
 <template>
-  <div class="flight-item">
+  <div class="flight-item"  @click="isShow = !isShow">
     <div>
       <!-- 显示的机票信息 -->
       <el-row type="flex" align="middle" class="flight-info">
@@ -27,7 +27,10 @@
         </el-col>
       </el-row>
     </div>
-    <div class="flight-recommend" v-for="(item,index) in data.seat_infos" :key="index">
+    <div class="flight-recommend" 
+    v-for="(item,index) in data.seat_infos" 
+    :key="index" 
+    v-show="isShow">
       <!-- 隐藏的座位信息列表 -->
       <el-row type="flex" justify="space-between" align="middle">
         <el-col :span="4">低价推荐</el-col>
@@ -61,6 +64,11 @@ export default {
   props:[
     "data"
   ],
+  data(){
+    return{
+      isShow:false
+    }
+  },
   computed: {
     rankTime(){
       // 如果接口没请求回来数据
@@ -81,7 +89,7 @@ export default {
       const hours = Math.floor(time/60);
       // 计算需要多少分钟
       const minutes = time%60; 
-      return hours +'时' + minutes +'分';
+      return hours +'时' + minutes +'分';   
     }
   }
 };
