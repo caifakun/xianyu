@@ -71,7 +71,15 @@ export default {
   },
   methods: {
     // 选择机场时候触发
-    handleAirport(value) {},
+    handleAirport(value) {
+      // 判断选择的 机场的名字 是否相等
+      // 如果是就把符合的返回
+     const arr =  this.data.flights.filter(v=>{
+        return v.org_airport_name == value;
+      })
+      // 然后通过自定义事件把返回来的数据 传到父组件去渲染
+      this.$emit('setFlightsList',arr)
+    },
 
     // 选择出发时间时候触发
     handleFlightTimes(value) {},
@@ -84,7 +92,7 @@ export default {
         return v.airline_name == value;
       })
       // 然后通过自定义事件把返回来的数据 传到父组件去渲染
-      this.$emit('setCompany',arr)
+      this.$emit('setFlightsList',arr)
     },
 
     // 选择机型时候触发

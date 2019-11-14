@@ -6,7 +6,7 @@
         <!-- 顶部过滤列表 -->
         <div class="flights-content">
           <!-- 过滤条件 -->
-          <FlightsFilters :data="dataList" @setCompany="setCompany"/>
+          <FlightsFilters :data="dataList" @setFlightsList="setFlightsList"/>
           <!-- 航班头部布局 -->
           <FlightsListHead />
 
@@ -110,7 +110,7 @@ export default {
     },
     
     // 过滤航空公司
-    setCompany(arr){
+    setFlightsList(arr){
       this.flightsList.flights = arr;
       // console.log(this.flightsList.flights);    
     }
