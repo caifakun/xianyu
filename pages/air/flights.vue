@@ -34,6 +34,7 @@
         <!-- 侧边栏 -->
         <div class="aside">
           <!-- 侧边栏组件 -->
+            <FlightsAside/>
         </div>
       </el-row>
     </section>
@@ -46,14 +47,16 @@ import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 import FlightsListHead from "@/components/air/flightsListHead.vue";
 import FlightsItem from "@/components/air/flightsItem.vue";
-import FlightsFilters from "@/components/air/flightsFilters.vue"
+import FlightsFilters from "@/components/air/flightsFilters.vue";
+import FlightsAside from "@/components/air/flightsAside.vue"
 export default {
   components: {
     Header,
     Footer,
     FlightsListHead,
     FlightsItem,
-    FlightsFilters
+    FlightsFilters,
+    FlightsAside
   },
   data() {
     return {
