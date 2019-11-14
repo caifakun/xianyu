@@ -86,13 +86,19 @@ export default {
       return arr 
     } 
   },
+ // 监听路由的变化，在组件被复用使用调用这个路由守卫
+  async beforeRouteUpdate(to,from,next){
+    // to对象中有一个 query 属性，里面存着路由信息
+    await this.getFlightsList(to.query);
+    next();
+  },
   methods: {
     // 封装获取机票列表页的函数
-    getFlightsList(){
+    getFlightsList(query){
       this.$axios({
         url: "/airs",
         method: "get",
-        params: this.$route.query
+        params: query
       }).then(res => {
         console.log(res.data);
         const {data} = res;
@@ -124,7 +130,7 @@ export default {
   },
   mounted() {
     // 实例挂载完毕，根据搜索信息筛选出机票列表页
-    this.getFlightsList(); 
+    this.getFlightsList(this.$route.query); 
   }
 };
 </script>
