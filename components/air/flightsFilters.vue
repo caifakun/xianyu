@@ -113,8 +113,15 @@ export default {
     },
 
     // 选择机型时候触发
-    handleAirSize(value) {},
-
+    handleAirSize(value) {
+      // 判断选择的 机型的大小 是否相等
+      // 如果是就把符合的返回
+      const arr = this.data.flights.filter(v => {
+        return v.plane_size == value;
+      });
+      // 然后通过自定义事件把返回来的数据 传到父组件去渲染
+      this.$emit("setFlightsList", arr);
+    },
     // 撤销条件时候触发
     handleFiltersCancel() {}
   }
