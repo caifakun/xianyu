@@ -59,7 +59,8 @@ export default {
     return {
       flightsList: {
         flights:[], //设置一个空的数组,防止监听flightsList中的数组未请求回来时报错
-        info:{} //设置一个默认值，防止数据传递去子组件未请求回来之前报错
+        info:{}, //设置一个默认值，防止数据传递去子组件未请求回来之前报错
+        options:{} //设置一个默认值，防止数据传递去子组件未请求回来之前报错
       }, //飞机票列表
       pageIndex:1, //页码数
       pageSize:5 //每页的数据数
