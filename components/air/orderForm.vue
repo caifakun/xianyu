@@ -45,19 +45,19 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="form.contactPhone">
               <template slot="append">
-                <el-button @click="handleSendCaptcha">发送验证码</el-button>
+                <el-button @click="handleSendCaptcha(form.contactPhone)">发送验证码</el-button>
               </template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
@@ -78,7 +78,10 @@ export default {
             id: ""
           }
         ],
-        insurances: [] //存入选中保险的id
+        insurances: [], //存入选中保险的id
+        contactName:"", //联系人名字
+        contactPhone:"",//联系人电话
+        captcha:"" //验证码
       },
       // 机票信息
       infoData: {
@@ -112,7 +115,16 @@ export default {
     },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+   async handleSendCaptcha(phone) {
+       if(!phone){
+           this.$message.error('请输入手机号','提示');
+           return;
+       }
+      const code = await this.$store.dispatch('user/sendCaptcha',phone);
+      this.$confirm('验证码为：'+ code,'提示',{
+        showCancelButton: false, // 隐藏取消按钮
+      });
+    },
 
     // 提交订单
     handleSubmit() {
