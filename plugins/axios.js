@@ -12,7 +12,7 @@ export default (nuxt,redirect)=>{
          if(statusCode === 400){
             Message.error(message)
          }
-         if(statusCode === 403){
+         if([401,403].indexOf(statusCode)>-1){
             Message.error('请先登录');
             // 跳转登录页
             nuxt.redirect('/user/login')
