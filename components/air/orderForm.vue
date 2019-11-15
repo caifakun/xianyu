@@ -110,7 +110,8 @@ export default {
       const index = this.form.insurances.indexOf(id);
       // console.log( id);
       // 判断是否存在
-      if (index > -1) {
+      if (index > -1) {  
+        //   存在就进行删除
         this.form.insurances.splice(index, 1);
       } else {
         this.form.insurances.push(id);
@@ -145,7 +146,9 @@ export default {
       }
       }).then(res => {
         console.log(res);
+        this.$message.success('正在生成订单，请稍后！')
       });
+      
     }
   },
   mounted() {
