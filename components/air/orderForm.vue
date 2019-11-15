@@ -34,7 +34,7 @@
           <el-checkbox
             :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
             border
-            @change="hanldeChange"
+            @change="hanldeChange(item.id)"
           ></el-checkbox>
         </div>
       </div>
@@ -77,7 +77,8 @@ export default {
             username: "",
             id: ""
           }
-        ]
+        ],
+        insurances: [] //存入选中保险的id
       },
       // 机票信息
       infoData: {
@@ -98,13 +99,25 @@ export default {
     handleDeleteUser(index) {
       this.form.users.splice(index, 1);
     },
-    hanldeChange() {},
+    // 判断保险是否选中
+    hanldeChange(id) {
+      const index = this.form.insurances.indexOf(id);
+      // console.log( id);
+
+      if (index > -1) {
+        this.form.insurances.splice(index, 1);
+      } else {
+        this.form.insurances.push(id);
+      }
+    },
 
     // 发送手机验证码
     handleSendCaptcha() {},
 
     // 提交订单
-    handleSubmit() {}
+    handleSubmit() {
+      // console.log(this.form.insurances);
+    }
   },
   mounted() {
     //   从url中拿到参数信息进行请求机票信息
