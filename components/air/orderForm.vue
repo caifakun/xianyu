@@ -2,8 +2,8 @@
   <div class="main">
     <div class="air-column">
       <h2>剩机人</h2>
-      <el-form class="member-info" >
-        <div class="member-info-item" v-for="(item,index) in users" :key="index">
+      <el-form class="member-info">
+        <div class="member-info-item" v-for="(item,index) in form.users" :key="index">
           <el-form-item label="乘机人类型">
             <el-input placeholder="姓名" class="input-with-select" v-model="item.username">
               <el-select slot="prepend" value="1" placeholder="请选择">
@@ -20,7 +20,7 @@
             </el-input>
           </el-form-item>
 
-          <span class="delete-user" @click="handleDeleteUser(index)" >-</span>
+          <span class="delete-user" @click="handleDeleteUser(index)">-</span>
         </div>
       </el-form>
 
@@ -30,8 +30,12 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item">
-          <el-checkbox label="航空意外险：￥30/份×1  最高赔付260万" border></el-checkbox>
+        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index">
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            border
+            @change="hanldeChange"
+          ></el-checkbox>
         </div>
       </div>
     </div>
@@ -66,33 +70,56 @@
 export default {
   data() {
     return {
-      users: [
-        {
-          username: "",
-          id: ""
-        }
-      ]
+      form: {
+        // 乘机人信息
+        users: [
+          {
+            username: "",
+            id: ""
+          }
+        ]
+      },
+      // 机票信息
+      infoData: {
+        insurances: [] //保险
+      }
     };
   },
   methods: {
     // 添加乘机人
     handleAddUsers() {
-        this.users.push({
-            username: "",
-            id: ""
-        })
+      this.form.users.push({
+        username: "",
+        id: ""
+      });
     },
 
     // 移除乘机人
     handleDeleteUser(index) {
-        this.users.splice(index,1);
+      this.form.users.splice(index, 1);
     },
+    hanldeChange() {},
 
     // 发送手机验证码
     handleSendCaptcha() {},
 
     // 提交订单
     handleSubmit() {}
+  },
+  mounted() {
+    //   从url中拿到参数信息进行请求机票信息
+    const { id, seat_xid } = this.$route.query;
+    this.$axios({
+      url: "/airs/" + id,
+      method: "get",
+      params: {
+        seat_xid
+      }
+    }).then(res => {
+      console.log(res.data);
+      const { insurances } = res.data;
+      this.infoData.insurances = insurances;
+    });
   }
 };
 </script>
