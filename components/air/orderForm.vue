@@ -79,9 +79,12 @@ export default {
           }
         ],
         insurances: [], //存入选中保险的id
-        contactName:"", //联系人名字
-        contactPhone:"",//联系人电话
-        captcha:"" //验证码
+        contactName: "", //联系人名字
+        contactPhone: "", //联系人电话
+        captcha: "", //验证码
+        invoice: true, //是否需要发票
+        seat_xid: "", //座位id
+        air: "" //航班id
       },
       // 机票信息
       infoData: {
@@ -106,7 +109,7 @@ export default {
     hanldeChange(id) {
       const index = this.form.insurances.indexOf(id);
       // console.log( id);
-
+      // 判断是否存在
       if (index > -1) {
         this.form.insurances.splice(index, 1);
       } else {
@@ -115,20 +118,30 @@ export default {
     },
 
     // 发送手机验证码
-   async handleSendCaptcha(phone) {
-       if(!phone){
-           this.$message.error('请输入手机号','提示');
-           return;
-       }
-      const code = await this.$store.dispatch('user/sendCaptcha',phone);
-      this.$confirm('验证码为：'+ code,'提示',{
-        showCancelButton: false, // 隐藏取消按钮
+    async handleSendCaptcha(phone) {
+      if (!phone) {
+        this.$message.error("请输入手机号", "提示");
+        return;
+      }
+      const code = await this.$store.dispatch("user/sendCaptcha", phone);
+      this.$confirm("验证码为：" + code, "提示", {
+        showCancelButton: false // 隐藏取消按钮
       });
     },
 
     // 提交订单
     handleSubmit() {
-      // console.log(this.form.insurances);
+      // 结构出来，修改this.form中air,seat_xid
+      const { id: air, seat_xid } = this.$route.query;
+      this.form = { ...this.form, air, seat_xid };
+      //    console.log(this.form);
+      this.$axios({
+        url: "/airorders",
+        method: "post",
+        data: this.form
+      }).then(res => {
+        console.log(res);
+      });
     }
   },
   mounted() {
