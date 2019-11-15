@@ -44,7 +44,8 @@ export default {
         // 在这里调用 actions的方法，this.$store.dispatch
         await this.$store.dispatch("user/login", this.form);
         //登录成功后跳转主页
-        this.$router.replace("/");
+        // this.$router.replace("/");
+        this.$router.back();
         // 进行提示
         this.$message.success("登录成功");
       } catch (error) {}
