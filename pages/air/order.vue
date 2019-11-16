@@ -9,7 +9,9 @@
         </div>
 
         <!-- 侧边栏 -->
-        <div class="aside"></div>
+        <div class="aside">
+          <OrderAside :data="$store.state.air.infoData"/>
+        </div>
       </el-row>
     </div>
     <Footer />
@@ -20,11 +22,13 @@
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 import OrderForm from "@/components/air/orderForm.vue"
+import OrderAside from "@/components/air/orderAside.vue"
 export default {
   components: {
     Header,
     Footer,
-    OrderForm
+    OrderForm,
+    OrderAside
   }
 };
 </script>

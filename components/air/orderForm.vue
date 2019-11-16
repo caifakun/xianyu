@@ -164,6 +164,8 @@ export default {
       console.log(res.data);
       const { insurances } = res.data;
       this.infoData.insurances = insurances;
+      // 把机票信息存储到store中
+      this.$store.commit('air/setInfoData',res.data);
     });
   }
 };
