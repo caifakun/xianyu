@@ -63,6 +63,8 @@
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <!-- 这里只是为了监听totalPrice -->
+    <span v-show="false">{{totalPrice}}</span>
   </div>
 </template>
 
@@ -89,8 +91,27 @@ export default {
       // 机票信息
       infoData: {
         insurances: [] //保险
-      }
+      },
+      flightsData: {}
     };
+  },
+  computed: {
+    totalPrice() {
+      if (!this.flightsData.seat_infos) return;
+      let price = 0;
+      // 成人机票单价
+      price += this.flightsData.seat_infos.org_settle_price;
+      // 机建+燃油
+      price += this.flightsData.airport_tax_audlet;
+      // 保险费
+      price += this.flightsData.insurances.length * 30;
+      // 总人数
+      price *= this.form.users.length;
+      // 计算好后存到store中
+      this.$store.commit("air/setTotalPrice", price);
+      // 只是作为返回作用
+      return "";
+    }
   },
   methods: {
     // 添加乘机人
@@ -108,9 +129,8 @@ export default {
     // 判断保险是否选中
     hanldeChange(id) {
       const index = this.form.insurances.indexOf(id);
-      // console.log( id);
       // 判断是否存在
-      if (index > -1) {  
+      if (index > -1) {
         //   存在就进行删除
         this.form.insurances.splice(index, 1);
       } else {
@@ -140,15 +160,14 @@ export default {
         url: "/airorders",
         method: "post",
         data: this.form,
-        headers:{
+        headers: {
           // Bearer属于jwt的token标准
           Authorization: "Bearer " + this.$store.state.user.userInfo.token
-      }
+        }
       }).then(res => {
         console.log(res);
-        this.$message.success('正在生成订单，请稍后！')
+        this.$message.success("正在生成订单，请稍后！");
       });
-      
     }
   },
   mounted() {
@@ -161,11 +180,15 @@ export default {
         seat_xid
       }
     }).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       const { insurances } = res.data;
+      // 把保险信息存到this.infoData.insurances
       this.infoData.insurances = insurances;
       // 把机票信息存储到store中
-      this.$store.commit('air/setInfoData',res.data);
+      this.flightsData = res.data;
+      console.log(this.flightsData);
+
+      this.$store.commit("air/setFlightsData", res.data);
     });
   }
 };

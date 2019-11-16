@@ -10,7 +10,7 @@
 
         <!-- 侧边栏 -->
         <div class="aside">
-          <OrderAside :data="$store.state.air.infoData"/>
+          <OrderAside :data="$store.state.air.flightsData"/>
         </div>
       </el-row>
     </div>
