@@ -41,6 +41,33 @@ export default {
       data: {}
     };
   },
+  methods: {
+    checkPay(data) {
+      this.$axios({
+        url: "/airorders/checkpay",
+        method: "post",
+        data: {
+          id: data.id, //订单id
+          nonce_str: data.price, // 支付接口返回的订单金额
+          out_trade_no: data.orderNo //订单编号
+        },
+        headers: {
+          // Bearer属于jwt的token标准
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        console.log(res);
+        const { statusTxt } = res.data;
+        if (statusTxt == "订单完成") {
+          this.$confirm("订单支付成功", "提示", {
+            confirmButtonText: "确定",
+            showCancelButton: false,
+            type: "success"
+          });
+        }
+      });
+    }
+  },
   mounted() {
     const { id } = this.$route.query;
     this.$axios({
@@ -54,7 +81,7 @@ export default {
         Authorization: "Bearer " + this.$store.state.user.userInfo.token
       }
     }).then(res => {
-      console.log(res.data);
+      //   console.log(res.data);
       this.data = res.data;
       // 生成二维码
       const canvas = document.querySelector("#qrcode-stage");
@@ -63,6 +90,7 @@ export default {
       QRCode.toCanvas(canvas, this.data.payInfo.code_url, {
         width: 200
       });
+      this.checkPay(this.data);
     });
   },
   filters: {
