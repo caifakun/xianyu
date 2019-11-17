@@ -30,25 +30,25 @@
 <script>
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
-
+import QRCode from "qrcode";
 export default {
   components: {
     Header,
     Footer
   },
-  data(){
-      return{
-          data:{}
-      }
+  data() {
+    return {
+      data: {}
+    };
   },
   mounted() {
     const { id } = this.$route.query;
     this.$axios({
-      url: "/airorders/"+ id ,
+      url: "/airorders/" + id,
       method: "get",
-    //   params: {
-    //     id
-    //   },
+      //   params: {
+      //     id
+      //   },
       headers: {
         // Bearer属于jwt的token标准
         Authorization: "Bearer " + this.$store.state.user.userInfo.token
@@ -56,13 +56,19 @@ export default {
     }).then(res => {
       console.log(res.data);
       this.data = res.data;
-    
+      // 生成二维码
+      const canvas = document.querySelector("#qrcode-stage");
+      // 第一个参数为 canvas dom元素
+      // 第二个是生成二维码的链接
+      QRCode.toCanvas(canvas, this.data.payInfo.code_url, {
+        width: 200
+      });
     });
   },
-  filters:{
-      tofixed(value){
-        return Number(value || 0).toFixed(2);
-      }
+  filters: {
+    tofixed(value) {
+      return Number(value || 0).toFixed(2);
+    }
   }
 };
 </script>
