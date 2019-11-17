@@ -30,12 +30,13 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index"
-         @change="hanldeChange(item.id)">
-          <el-checkbox
-            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
-            border
-          ></el-checkbox>
+        <div
+          class="insurance-item"
+          v-for="(item,index) in infoData.insurances"
+          :key="index"
+          @change="hanldeChange(item.id)"
+        >
+          <el-checkbox :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" border></el-checkbox>
         </div>
       </div>
     </div>
@@ -165,8 +166,16 @@ export default {
           Authorization: "Bearer " + this.$store.state.user.userInfo.token
         }
       }).then(res => {
-        console.log(res);
+        console.log(res.data);
+        console.log(res.data.data.id);
+
         this.$message.success("正在生成订单，请稍后！");
+        this.$router.push({
+          path: "/air/pay",
+          query: {
+            id: res.data.data.id
+          }
+        });
       });
     }
   },
