@@ -30,11 +30,11 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index">
+        <div class="insurance-item" v-for="(item,index) in infoData.insurances" :key="index"
+         @change="hanldeChange(item.id)">
           <el-checkbox
             :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
             border
-            @change="hanldeChange(item.id)"
           ></el-checkbox>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default {
       // 机建+燃油
       price += this.flightsData.airport_tax_audlet;
       // 保险费
-      price += this.flightsData.insurances.length * 30;
+      price += this.form.insurances.length * 30;
       // 总人数
       price *= this.form.users.length;
       // 计算好后存到store中
