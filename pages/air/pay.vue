@@ -38,12 +38,15 @@ export default {
   },
   data() {
     return {
-      data: {}
+      data: {},
+      //   定时器
+      timer: null
     };
   },
-  methods: {
-    checkPay(data) {
-      this.$axios({
+  methods: { 
+    async checkPay(data) {
+        // 这里利用了async await 等待promise返回的res，再进行判断，不然会出现，res一直存着的情况，一直进行轮询
+      const res = await this.$axios({
         url: "/airorders/checkpay",
         method: "post",
         data: {
@@ -55,17 +58,21 @@ export default {
           // Bearer属于jwt的token标准
           Authorization: "Bearer " + this.$store.state.user.userInfo.token
         }
-      }).then(res => {
-        console.log(res);
-        const { statusTxt } = res.data;
-        if (statusTxt == "订单完成") {
-          this.$confirm("订单支付成功", "提示", {
-            confirmButtonText: "确定",
-            showCancelButton: false,
-            type: "success"
-          });
-        }
       });
+      const { statusTxt } = res.data;
+      if (statusTxt == "支付完成") {
+        // 支付成功进行提示
+        this.$confirm("订单支付成功", "提示", {
+          confirmButtonText: "确定",
+          showCancelButton: false,
+          type: "success"
+        });
+        // 支付成功，需要把定时器清楚掉。
+        clearInterval(this.timer);
+        // 重新把定时器赋值为空
+        this.timer = null;
+        return;
+      }
     }
   },
   mounted() {
@@ -90,7 +97,10 @@ export default {
       QRCode.toCanvas(canvas, this.data.payInfo.code_url, {
         width: 200
       });
-      this.checkPay(this.data);
+      //   设置一个定时器进行轮询，看看订单是否支付成功
+      this.timer = setInterval(() => {
+        this.checkPay(this.data);
+      }, 3000);
     });
   },
   filters: {
