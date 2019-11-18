@@ -35,14 +35,22 @@
         <!-- 搜索框 -->
         <div class="search-city">
           <div class="search">
-            <input type="text" class="searchInput" placeholder="请输入想去的地方，比如：'广州'" />
+            <input
+              type="text"
+              class="searchInput"
+              placeholder="请输入想去的地方，比如：'广州'"
+              v-model="inputForm"
+            />
             <span class="el-icon-search"></span>
           </div>
           <div class="keyword">
             推荐：
-            <span>广州</span>
-            <span>上海</span>
-            <span>北京</span>
+            <span
+              class="city"
+              @click="changeInput(item)"
+              v-for="(item,index) in ['广州','上海','北京']"
+              :key="index"
+            >{{item}}</span>
           </div>
         </div>
         <!-- 推荐攻略 -->
@@ -54,7 +62,7 @@
             </div>
           </div>
           <!-- 引入推荐攻略组件 -->
-          <Recommend/>
+          <Recommend />
         </div>
       </div>
     </div>
@@ -66,7 +74,7 @@
 <script>
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
-import Recommend from '@/components/post/recommend.vue';
+import Recommend from "@/components/post/recommend.vue";
 export default {
   components: {
     Header,
@@ -77,7 +85,8 @@ export default {
     return {
       cities: [], //用于渲染tabs栏数据
       current: null, // 用于切换tabs数据
-      isShow: false //用于
+      isShow: false, //用于
+      inputForm: "" // 用于绑定输出搜索框
     };
   },
   methods: {
@@ -90,6 +99,10 @@ export default {
     leave() {
       this.isShow = false;
       this.current = null;
+    },
+    // 使用推荐城市进行搜索
+    changeInput(item) {
+      this.inputForm = item;
     }
   },
   mounted() {
@@ -228,6 +241,10 @@ export default {
       margin-top: 10px;
       font-size: 12px;
       color: #666;
+      .city {
+        margin-right: 10px;
+        cursor: pointer;
+      }
     }
   }
   // 推荐攻略
