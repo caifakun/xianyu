@@ -62,7 +62,7 @@
             </div>
           </div>
           <!-- 引入推荐攻略组件 -->
-          <Recommend />
+          <Recommend v-for="(item,index) in postList" :key="index" :data="item"/>
         </div>
       </div>
     </div>
@@ -86,7 +86,8 @@ export default {
       cities: [], //用于渲染tabs栏数据
       current: null, // 用于切换tabs数据
       isShow: false, //用于
-      inputForm: "" // 用于绑定输出搜索框
+      inputForm: "", // 用于绑定输出搜索框
+      postList:[] //用于存储文章列表信息进行渲染
     };
   },
   methods: {
@@ -111,9 +112,19 @@ export default {
       url: "/posts/cities",
       method: "get"
     }).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       const { data } = res.data;
       this.cities = data;
+    });
+
+    // 推荐攻略
+    this.$axios({
+      url: "/posts",
+      method: "get"
+    }).then(res => {
+      console.log(res.data);
+      const {data} = res.data;
+      this.postList = data;
     });
   }
 };

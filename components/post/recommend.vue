@@ -1,64 +1,64 @@
 <template>
   <div class="content">
-    <div class="moreImg">
+    <div class="moreImg" v-if="data.images.length >= 3">
       <h4 class="title-txt">
-        <a href="#">赛班贵？一定是你的打开方式不对！6000块玩转赛班</a>
+        <a href="#">{{data.title}}</a>
       </h4>
       <p class="posts">
-        <a
-          href="#"
-        >大家对塞班岛总存在着这样的误解，知道它是美属地盘，就理所当然地觉得这里的花费一定很高，花费高有高的玩法，那如果只有6000块的预算呢？要怎么玩？关于旅行这件事，我们要让钱花得更有道理，收下这份攻略，带你6000块花式玩转塞班。图：塞班岛。 by第5季旅游一、怎样用6000块玩转塞班？大多数出境游客人不做预算或最</a>
+        <a href="#">{{data.summary | change}}</a>
       </p>
       <a href="#" class="more-img">
-        <img src="@/static/images/saiban.jpeg" alt />
+        <!-- <img src="/static/images/saiban.jpeg" alt />
         <img src="@/static/images/6@2x.png" alt />
-        <img src="@/static/images/eating.jpeg" alt />
+        <img src="@/static/images/eating.jpeg" alt /> -->
+        <img :src="data.images[0]" alt />
+        <img :src="data.images[1]" alt />
+        <img :src="data.images[2]" alt />
       </a>
       <div class="userInfo">
         <div class="left">
           <span>
-            <i class="el-icon-location-outline"></i> 北京市
+            <i class="el-icon-location-outline"></i> {{data.cityName}}
           </span>
           <a href="#" class="user">
             by
-            <img src="@/static/images/avatar.jpg" alt />
-            <span class="username">地球发动机</span>
+            <!-- <img src="@/static/images/avatar.jpg" alt /> -->
+            <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
+            <span class="username">{{data.account.nickname}}</span>
           </a>
           <span>
-            <i class="el-icon-view"></i> 10077
+            <i class="el-icon-view"></i> {{data.watch}}
           </span>
         </div>
-        <div class="right">66赞</div>
+        <div class="right">{{data.like || 0}} 赞</div>
       </div>
     </div>
-    <div class="oneImg">
+    <div class="oneImg" v-if="data.images.length >= 0 && data.images.length <3">
       <a href="#">
-        <img src="@/static/images/sky.jpeg" alt />
+        <img :src="data.images[0]" alt />
       </a>
       <div class="right">
         <h4 class="title-txt">
-          <a href="#">远东行：用好奇心打量这座城 —— 最值得收藏的海参崴出行攻略</a>
+          <a href="#">{{data.title}}</a>
         </h4>
         <p class="posts">
-          <a
-            href="#"
-          >想象一下一个距离 北京 只有2.5小时飞行距离的城市：身处 亚洲 却能感受到十足的欧陆风情——欧式建筑和街道，金发碧眼的路人，正宗的西餐外加只有国内一半售价的帝王蟹可以敞开吃——更难能可贵的是，这里对国人（实质）免签，有直飞航班，低廉的物价，且尚未有太多的游客涉足还保留着原汁原味的传统风情！</a>
+          <a href="#">{{data.summary | change}}</a>
         </p>
         <div class="userInfo">
           <div class="left">
             <span>
-              <i class="el-icon-location-outline"></i> 北京市
+              <i class="el-icon-location-outline"></i> {{data.cityName}}
             </span>
             <a href="#" class="user">
               by
-              <img src="@/static/images/avatar.jpg" alt />
-              <span class="username">地球发动机</span>
+              <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
+              <span class="username">{{data.nickname}}</span>
             </a>
             <span>
-              <i class="el-icon-view"></i> 10077
+              <i class="el-icon-view"></i> {{data.watch}}
             </span>
           </div>
-          <div class="zan">66赞</div>
+          <div class="zan">{{data.like || 0}} 赞</div>
         </div>
       </div>
     </div>
@@ -66,7 +66,14 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["data"],
+  filters:{
+      change(value){
+          return value.replace(/&nbsp;/g,'');
+      }
+  }
+};
 </script>
 
 <style lang="less" scoped>
@@ -74,6 +81,7 @@ export default {};
   .moreImg {
     padding: 20px 0;
     border-bottom: 1px solid #eeeeee;
+    margin-bottom: 10px;
     .title-txt {
       font-size: 18px;
       font-weight: normal;
@@ -86,6 +94,11 @@ export default {};
       font-size: 14px;
       color: #666;
       line-height: 1.5;
+      height: 63px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
     }
     .more-img {
       display: block;
@@ -129,6 +142,7 @@ export default {};
     padding: 20px 0;
     overflow: hidden;
     border-bottom: 1px solid #eeeeee;
+    margin-bottom: 10px;
     img {
       float: left;
       width: 220px;
