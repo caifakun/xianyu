@@ -10,7 +10,7 @@
       <a href="#" class="more-img">
         <!-- <img src="/static/images/saiban.jpeg" alt />
         <img src="@/static/images/6@2x.png" alt />
-        <img src="@/static/images/eating.jpeg" alt /> -->
+        <img src="@/static/images/eating.jpeg" alt />-->
         <img :src="data.images[0]" alt />
         <img :src="data.images[1]" alt />
         <img :src="data.images[2]" alt />
@@ -18,7 +18,8 @@
       <div class="userInfo">
         <div class="left">
           <span>
-            <i class="el-icon-location-outline"></i> {{data.cityName}}
+            <i class="el-icon-location-outline"></i>
+            {{data.cityName}}
           </span>
           <a href="#" class="user">
             by
@@ -27,7 +28,8 @@
             <span class="username">{{data.account.nickname}}</span>
           </a>
           <span>
-            <i class="el-icon-view"></i> {{data.watch}}
+            <i class="el-icon-view"></i>
+            {{data.watch}}
           </span>
         </div>
         <div class="right">{{data.like || 0}} 赞</div>
@@ -35,7 +37,8 @@
     </div>
     <div class="oneImg" v-if="data.images.length >= 0 && data.images.length <3">
       <a href="#">
-        <img :src="data.images[0]" alt />
+        <img :src="data.images[0]" alt v-if="data.images[0]" />
+        <img src="@/static/images/aoteman1.jpg" alt v-else />
       </a>
       <div class="right">
         <h4 class="title-txt">
@@ -47,15 +50,17 @@
         <div class="userInfo">
           <div class="left">
             <span>
-              <i class="el-icon-location-outline"></i> {{data.cityName}}
+              <i class="el-icon-location-outline"></i>
+              {{data.cityName}}
             </span>
             <a href="#" class="user">
               by
               <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
-              <span class="username">{{data.nickname}}</span>
+              <span class="username">{{data.account.nickname}}</span>
             </a>
             <span>
-              <i class="el-icon-view"></i> {{data.watch}}
+              <i class="el-icon-view"></i>
+              {{data.watch}}
             </span>
           </div>
           <div class="zan">{{data.like || 0}} 赞</div>
@@ -68,10 +73,10 @@
 <script>
 export default {
   props: ["data"],
-  filters:{
-      change(value){
-          return value.replace(/&nbsp;/g,'');
-      }
+  filters: {
+    change(value) {
+      return value.replace(/&nbsp;/g, "");
+    }
   }
 };
 </script>

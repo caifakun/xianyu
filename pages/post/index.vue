@@ -57,7 +57,7 @@
         <div class="recommend">
           <div class="title">
             <h4>推荐攻略</h4>
-            <div class="writing">
+            <div class="writing" @click="$router.push('/post/create')">
               <span class="el-icon-edit"></span>写游记
             </div>
           </div>
