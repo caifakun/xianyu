@@ -75,6 +75,22 @@ export default {
       ]
     };
   },
+  methods: {
+    //   发表文章
+    post() {
+      this.$axios({
+        url: "/posts",
+        method: "post",
+        data: this.form,
+        headers: {
+          // Bearer属于jwt的token标准
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        console.log(res);
+      });
+    }
+  }
 };
 </script>
 
