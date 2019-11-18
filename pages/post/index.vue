@@ -16,11 +16,17 @@
             <span class="el-icon-arrow-right color"></span>
             <div class="item-content" :class="{show:current == index}" v-if="isShow">
               <ul>
-                <li v-for="(element,index) in item.children" :key="index">
-                  <i>{{index+1}}</i>
-                  <span class="city">{{element.city}}</span>
-                  <span class="city-description">{{element.desc}}</span>
-                </li>
+                <a href="javascrit:;">
+                  <li v-for="(element,index) in item.children" :key="index">
+                    <i>{{index+1}}</i>
+                    <a href="javascrit:;" class="citystyle">
+                      <span>{{element.city}}</span>
+                    </a>
+                    <a href="javascrit:;" class="desc">
+                      <span>{{element.desc}}</span>
+                    </a>
+                  </li>
+                </a>
               </ul>
             </div>
           </li>
@@ -62,7 +68,7 @@
             </div>
           </div>
           <!-- 引入推荐攻略组件 -->
-          <Recommend v-for="(item,index) in postList" :key="index" :data="item"/>
+          <Recommend v-for="(item,index) in postList" :key="index" :data="item" />
         </div>
       </div>
     </div>
@@ -87,7 +93,7 @@ export default {
       current: null, // 用于切换tabs数据
       isShow: false, //用于
       inputForm: "", // 用于绑定输出搜索框
-      postList:[] //用于存储文章列表信息进行渲染
+      postList: [] //用于存储文章列表信息进行渲染
     };
   },
   methods: {
@@ -123,7 +129,7 @@ export default {
       method: "get"
     }).then(res => {
       console.log(res.data);
-      const {data} = res.data;
+      const { data } = res.data;
       this.postList = data;
     });
   }
@@ -186,11 +192,17 @@ export default {
           font-style: italic;
           font-size: 20px;
         }
-        .city {
+        .citystyle{
           margin: 0 20px;
+          &:hover{
+            text-decoration: underline;
+          }
         }
-        .city-description {
+        .desc{
           color: #999;
+          &:hover{
+            text-decoration: underline;
+          }
         }
       }
     }
