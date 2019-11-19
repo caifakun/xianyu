@@ -77,9 +77,9 @@
             @current-change="handleCurrentChange"
             :current-page="currentPage"
             :page-sizes="[3, 5, 8, 10]"
-            :page-size="1"
+            :page-size="3"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="100"
+            :total="total"
           ></el-pagination>
         </div>
       </div>
@@ -101,14 +101,18 @@ export default {
   data() {
     return {
       cities: [], //用于渲染tabs栏数据
+      postList: [], //用于存储文章列表信息进行渲染
+      total:0, //用设置分页总数
       current: null, // 用于切换tabs数据
       isShow: false, //用于
       inputForm: "", // 用于绑定输出搜索框
-      postList: [], //用于存储文章列表信息进行渲染
+
       // 用于分页
-      currentPage: "",
-      pageIndex: 1,
-      pageSize: 5
+      currentPage: 1,
+      page: {
+        _start: 0,  //数据从那条开始
+        _limit: 3  //获取的条数
+      }
     };
   },
   methods: {
@@ -126,11 +130,33 @@ export default {
     changeInput(item) {
       this.inputForm = item;
     },
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    getRecommend() {
+      // 推荐攻略
+      this.$axios({
+        url: "/posts",
+        // url: "/",
+        method: "get",
+        params:this.page
+      }).then(res => {
+        console.log(res.data);
+        this.total = res.data.total;
+        const { data } = res.data;
+        this.postList = data;
+      });
     },
+    // 改变获取条数
+    handleSizeChange(val) {
+      this.page._limit = val;
+      this.getRecommend();
+      // console.log(`每页 ${val} 条`);
+    },
+    // 改变页码
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      let start = 0
+      start += (val - 1)*this.page._limit ; //1 3   2 6  3 9
+      this.page._start = start;
+      this.getRecommend();
+      // console.log(`当前页: ${val}`);
     }
   },
   mounted() {
@@ -143,16 +169,7 @@ export default {
       const { data } = res.data;
       this.cities = data;
     });
-
-    // 推荐攻略
-    this.$axios({
-      url: "/posts",
-      method: "get"
-    }).then(res => {
-      console.log(res.data);
-      const { data } = res.data;
-      this.postList = data;
-    });
+    this.getRecommend();
   }
 };
 </script>
