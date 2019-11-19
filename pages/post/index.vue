@@ -17,7 +17,7 @@
             <div class="item-content" :class="{show:current == index}" v-if="isShow">
               <ul>
                 <a href="javascrit:;">
-                  <li v-for="(element,index) in item.children" :key="index">
+                  <li v-for="(element,index) in item.children" :key="index" @click="search(element.city)">
                     <i>{{index+1}}</i>
                     <a href="javascrit:;" class="citystyle">
                       <span>{{element.city}}</span>
@@ -47,7 +47,7 @@
               placeholder="请输入想去的地方，比如：'广州'"
               v-model="inputForm"
             />
-            <span class="el-icon-search"></span>
+            <span class="el-icon-search" @click="search(inputForm)"></span>
           </div>
           <div class="keyword">
             推荐：
@@ -102,16 +102,17 @@ export default {
     return {
       cities: [], //用于渲染tabs栏数据
       postList: [], //用于存储文章列表信息进行渲染
-      total:0, //用设置分页总数
+      total: 0, //用设置分页总数
       current: null, // 用于切换tabs数据
       isShow: false, //用于
       inputForm: "", // 用于绑定输出搜索框
+      cityId: null,
 
       // 用于分页
       currentPage: 1,
       page: {
-        _start: 0,  //数据从那条开始
-        _limit: 3  //获取的条数
+        _start: 0, //数据从那条开始
+        _limit: 3 //获取的条数
       }
     };
   },
@@ -126,6 +127,20 @@ export default {
       this.isShow = false;
       this.current = null;
     },
+    // 进行搜索
+    search(city) {
+      this.$axios({
+        url: "/posts",
+        method: "get",
+        params: {
+          city
+        }
+      }).then(res => {
+        // console.log(res);
+        const { data } = res.data;
+        this.postList = data;
+      });
+    },
     // 使用推荐城市进行搜索
     changeInput(item) {
       this.inputForm = item;
@@ -136,9 +151,9 @@ export default {
         url: "/posts",
         // url: "/",
         method: "get",
-        params:this.page
+        params: this.page
       }).then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.total = res.data.total;
         const { data } = res.data;
         this.postList = data;
@@ -152,8 +167,8 @@ export default {
     },
     // 改变页码
     handleCurrentChange(val) {
-      let start = 0
-      start += (val - 1)*this.page._limit ; //1 3   2 6  3 9
+      let start = 0;
+      start += (val - 1) * this.page._limit; //1 3   2 6  3 9
       this.page._start = start;
       this.getRecommend();
       // console.log(`当前页: ${val}`);
@@ -165,7 +180,7 @@ export default {
       url: "/posts/cities",
       method: "get"
     }).then(res => {
-      // console.log(res.data);
+      console.log(res.data);
       const { data } = res.data;
       this.cities = data;
     });
@@ -305,6 +320,10 @@ export default {
       .city {
         margin-right: 10px;
         cursor: pointer;
+        &:hover{
+          color: #ffa500;
+          text-decoration: underline;
+        }
       }
     }
   }
