@@ -70,9 +70,20 @@
           <!-- 引入推荐攻略组件 -->
           <Recommend v-for="(item,index) in postList" :key="index" :data="item" />
         </div>
+        <!-- 引入分页模块 -->
+        <div class="block">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[3, 5, 8, 10]"
+            :page-size="1"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="100"
+          ></el-pagination>
+        </div>
       </div>
     </div>
-
     <Footer />
   </div>
 </template>
@@ -93,7 +104,11 @@ export default {
       current: null, // 用于切换tabs数据
       isShow: false, //用于
       inputForm: "", // 用于绑定输出搜索框
-      postList: [] //用于存储文章列表信息进行渲染
+      postList: [], //用于存储文章列表信息进行渲染
+      // 用于分页
+      currentPage: "",
+      pageIndex: 1,
+      pageSize: 5
     };
   },
   methods: {
@@ -110,6 +125,12 @@ export default {
     // 使用推荐城市进行搜索
     changeInput(item) {
       this.inputForm = item;
+    },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   },
   mounted() {
@@ -192,15 +213,15 @@ export default {
           font-style: italic;
           font-size: 20px;
         }
-        .citystyle{
+        .citystyle {
           margin: 0 20px;
-          &:hover{
+          &:hover {
             text-decoration: underline;
           }
         }
-        .desc{
+        .desc {
           color: #999;
-          &:hover{
+          &:hover {
             text-decoration: underline;
           }
         }
@@ -308,5 +329,9 @@ export default {
       }
     }
   }
+}
+.block {
+  // width: 700px;
+  margin-bottom: 20px;
 }
 </style>
