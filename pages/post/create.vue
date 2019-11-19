@@ -27,7 +27,6 @@
             action="http://127.0.0.1:1337/upload"
             list-type="picture-card"
             name="files"
-            :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success="handleSuccess"
           >
@@ -43,20 +42,18 @@
         <el-row class="post">
           <el-button type="primary" class="button" @click="post">发布</el-button>
           <span class="or">或者</span>
-          <a href="javascript:;" class="save">保存到草稿</a>
+          <a href="javascript:;" class="save" @click="save">保存到草稿</a>
         </el-row>
       </div>
       <div class="right">
-        <h4 class="draft">草稿箱（0）</h4>
-        <div class="draft-content">
-          <span class="draft-title">123</span>
-          <span class="el-icon-edit"></span>
-          <p class="time">2019-11-18</p>
-        </div>
-        <div class="draft-content">
-          <span class="draft-title">123</span>
-          <span class="el-icon-edit"></span>
-          <p class="time">2019-11-18</p>
+        <h4 class="draft">草稿箱（{{draftDataList.length}}）</h4>
+        <div class="draft-content" v-for="(item,index) in draftDataList" :key="index">
+          <span class="main" @click="edit(index)">
+            <span class="draft-title">{{item.title}}</span>
+            <span class="el-icon-edit"></span>
+          </span>
+          <span class="del" @click="del(index)">删除</span>
+          <p class="time">{{item.time}}</p>
         </div>
       </div>
     </div>
@@ -93,7 +90,8 @@ export default {
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["image", "code-block"]
-      ]
+      ],
+      draftDataList: [] //用于存储草稿
     };
   },
   methods: {
@@ -125,17 +123,14 @@ export default {
     },
     handleSuccess(res) {
       console.log(res[0].url);
+      // 这里可以知道如果图片在富文本插入的格式是这样的
       let url = this.$axios.defaults.baseURL + res[0].url;
       this.form.content = this.form.content + `<img src="${url}">`;
-      console.log(this.form.content);
-
-      
-      
+      // console.log(this.form.content);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handlePictureCardPreview(file) {},
     //   发表文章
     post() {
       this.$axios({
@@ -149,8 +144,38 @@ export default {
       }).then(res => {
         console.log(res);
       });
+    },
+    // 保存草稿
+     save() {
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const time = `${year}-${month}-${day}`;
+      // ES6 对象解构合并
+      const draftData = { time, ...this.form };
+      // 添加到草稿箱中
+      // const data =  [];
+      // data.push(draftData);
+      this.$store.commit('post/setdraftDataList',draftData);
+      
+    },
+    // 进行编辑草稿
+    edit(index){
+      this.draftData = {
+        title : this.draftDataList[index].title,
+        content : this.draftDataList[index].content,
+        city : this.draftDataList[index].city
+      };      
+      this.form = this.draftData;
     }
-  }
+  },
+  mounted() {
+    // 挂着完毕后，就把数据取出来
+    setTimeout(()=>{
+      this.draftDataList = this.$store.state.post.draftDataList;    
+    })  
+  },
 };
 </script>
 
@@ -189,7 +214,7 @@ export default {
     }
     /deep/.ql-editor {
       height: 400px;
-      img{
+      img {
         width: 200px;
         height: 150px;
         object-fit: cover;
@@ -233,6 +258,22 @@ export default {
     .draft-content {
       margin: 10px 0;
       font-size: 14px;
+      .main{
+        cursor: pointer;
+        &:hover{
+          color:#ffa500;
+          text-decoration: underline;
+        }
+      }
+      .del{
+        float: right;
+        font-size: 12px;
+        background: #409eff;
+        color: #fff;
+        padding: 4px 10px;
+        border-radius: 10px;
+        cursor: pointer;
+      }
       .time {
         color: #999;
       }
