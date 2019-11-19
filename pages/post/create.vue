@@ -20,8 +20,22 @@
             :useCustomImageHandler="true"
             v-model="form.content"
             :editorToolbar="customToolbar"
+            @image-added="imageUpload"
           ></vue-editor>
           <!-- @image-added="imageUpload" -->
+          <el-upload
+            action="http://127.0.0.1:1337/upload"
+            list-type="picture-card"
+            name="files"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleSuccess"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <!-- <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt />
+          </el-dialog>-->
           <el-form-item label="选择城市" class="select">
             <el-input class="inputCity" placeholder="请搜索游玩城市" v-model="form.city"></el-input>
           </el-form-item>
@@ -54,7 +68,13 @@
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 // 引入富文本插件
-import { VueEditor } from "vue2-editor";
+let VueEditor;
+
+if (process.browser) {
+  let editor = require("vue2-editor").default;
+  VueEditor = editor.VueEditor;
+}
+
 export default {
   components: {
     Header,
@@ -68,6 +88,7 @@ export default {
         content: "", //数据绑定文章内容
         city: "" //搜索游玩城市
       },
+      // 这里是配置富文本框
       customToolbar: [
         ["bold", "italic", "underline"],
         [{ list: "ordered" }, { list: "bullet" }],
@@ -76,6 +97,45 @@ export default {
     };
   },
   methods: {
+    //   上传图片
+    imageUpload(file, Edior, cursorLocation, resetUploader) {
+      const formData = new FormData();
+      formData.append("files", file);
+      this.$axios({
+        url: "/upload",
+        method: "post",
+        data: formData
+      })
+        .then(res => {
+          const { data } = res;
+          console.log(data);
+
+          let url = this.$axios.defaults.baseURL + data[0].url;
+          // 这里是想将我们上传到服务器的图片，放入编辑器当中
+          // Edior 是编辑器元素
+          // insertEmbed 是个方法
+          // cursorLocation 代表光标的位置
+          // image是文件名，url是上传图片的地址
+          Edior.insertEmbed(cursorLocation, "image", url);
+          resetUploader();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    handleSuccess(res) {
+      console.log(res[0].url);
+      let url = this.$axios.defaults.baseURL + res[0].url;
+      this.form.content = this.form.content + `<img src="${url}">`;
+      console.log(this.form.content);
+
+      
+      
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePictureCardPreview(file) {},
     //   发表文章
     post() {
       this.$axios({
@@ -129,6 +189,14 @@ export default {
     }
     /deep/.ql-editor {
       height: 400px;
+      img{
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+      }
+    }
+    .quillWrapper {
+      margin-bottom: 20px;
     }
   }
   .select {
@@ -170,5 +238,28 @@ export default {
       }
     }
   }
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

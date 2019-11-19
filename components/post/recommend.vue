@@ -29,7 +29,7 @@
           </a>
           <span>
             <i class="el-icon-view"></i>
-            {{data.watch}}
+            {{data.watch || 0}}
           </span>
         </div>
         <div class="right">{{data.like || 0}} 赞</div>
@@ -60,7 +60,7 @@
             </a>
             <span>
               <i class="el-icon-view"></i>
-              {{data.watch}}
+              {{data.watch || 0}}
             </span>
           </div>
           <div class="zan">{{data.like || 0}} 赞</div>
