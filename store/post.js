@@ -7,8 +7,14 @@ export const state = ()=>{
 
 // mutations是用于同步修改state的数据
 export const mutations = {
-    setdraftDataList(state,data){
+    // 设置草稿数据
+    setDraftDataList(state,data){
         // 把数据存储到draftDataList
         return state.draftDataList.unshift(data);
+    },
+    // 修改草稿数据
+    changeDraftDataList(state,index){
+        const data =  state.draftDataList.splice(index,1);
+        return data;
     }
 }

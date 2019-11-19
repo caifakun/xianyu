@@ -155,9 +155,7 @@ export default {
       // ES6 对象解构合并
       const draftData = { time, ...this.form };
       // 添加到草稿箱中
-      // const data =  [];
-      // data.push(draftData);
-      this.$store.commit('post/setdraftDataList',draftData);
+      this.$store.commit('post/setDraftDataList',draftData);
       
     },
     // 进行编辑草稿
@@ -168,6 +166,11 @@ export default {
         city : this.draftDataList[index].city
       };      
       this.form = this.draftData;
+    },
+    // 删除草稿
+    del(index){
+      // 通过index传到store仓库去删除对应的内容
+      this.$store.commit('post/changeDraftDataList',index);
     }
   },
   mounted() {
