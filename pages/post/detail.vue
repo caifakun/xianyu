@@ -57,7 +57,7 @@
           </div>
         </div>
         <!-- 这里引入评论组件 -->
-        <Comments :data="item"/>
+        <Comments />
       </div>
       <div class="right">
         <h4>相关攻略</h4>
@@ -108,7 +108,7 @@ export default {
         id
       }
     }).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       const { data } = res.data;
       data.forEach(e => {
         var time = moment(e.created_at).format("YYYY-MM-DD HH:mm");
