@@ -8,6 +8,7 @@
       :rows="2"
       placeholder="说点什么吧..."
       v-model="form.content"
+      ref="textarea"
     ></el-input>
     <div class="commit">
       <div class="left">
@@ -18,10 +19,11 @@
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
-          :file-list="fileList"
+          
         >
           <i class="el-icon-plus"></i>
         </el-upload>
+        <!-- :file-list="fileList" -->
         <!-- 用于查看图片 -->
         <el-dialog :visible.sync="dialogVisible">
           <img width="100%" :src="dialogImageUrl" alt class="look" />
@@ -47,12 +49,20 @@
             <!-- <span class="time">2019-11-19 3:58</span> -->
             <span class="time">{{item.account.created_at | changeTime}}</span>
           </div>
-          <span class="number">{{item.id}}</span>
+          <span class="number">{{item.level}}</span>
         </div>
         <CommentsFloor :data="item" />
         <div class="item-content">
           <div class="text">{{item.content}}</div>
-          <span class="replay" :class="{show:current == index}"  v-if="isShow" @click="replayComment(item.id)">回复</span>
+          <div class="picture" v-if="item.pics" >
+            <img v-for="(e,i) in item.pics" :key="i" :src="`${$axios.defaults.baseURL}${e.url}`" alt="">
+          </div>
+          <span
+            class="replay"
+            :class="{show:current == index}"
+            v-if="isShow"
+            @click="replayComment(item.id)"
+          >回复</span>
         </div>
       </div>
     </div>
@@ -86,9 +96,8 @@ export default {
         content: "", // 用于写评论内容
         score: [], // 评分对象
         pics: [], //图片
-        hotel: null, //酒店id
         post: this.$route.query.id, // 文章id
-        follow: null //回复id
+        follow: null //回复评论
       },
       fileList: [], //用于存储上传图片文件
       commentsList: [], //用于存储评论数据
@@ -119,8 +128,11 @@ export default {
     },
     // 上传图片成功
     handleSuccess(res) {
-      // this.form.pics.push(res[0]);
-      this.form.pics = this.fileList;
+      this.form.pics.push(res[0]);
+
+      // this.form.pics = this.fileList;
+      // console.log( this.fileList);
+      
     },
     // 移除图片
     handleRemove(file, fileList) {
@@ -147,9 +159,18 @@ export default {
             this.fileList = [];
           }
         });
-      } else {
-        this.$message.error("请输入内容");
       }
+      
+      // else {
+      //   this.$message.error("请输入内容");
+      // }
+    },
+    // 回复评论
+    replayComment(id) {
+      this.$refs.textarea.focus();
+      
+      this.form.follow = id;
+      this.postComment();
     }
   },
   mounted() {
@@ -259,8 +280,19 @@ export default {
         font-size: 14px;
         color: #1e50a2;
         cursor: pointer;
-        &:hover{
+        &:hover {
           text-decoration: underline;
+        }
+      }
+      .picture{
+        margin-top: 10px;
+        img{
+          padding: 5px;
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border: 1px dashed #ddd;
+          border-radius: 10px;
         }
       }
     }
