@@ -2,24 +2,24 @@
   <div>
     <Header />
     <div class="container">
-      <div class="left">
+      <div class="left" v-for="(item,index) in postsDetail" :key="index">
         <div class="breadcrumb">
           旅游攻略
           <i>/</i>
           <span>攻略详情</span>
         </div>
-        <h1>塞班贵？一定是你的打开方式不对！6000块玩转塞班</h1>
+        <h1>{{item.title}}</h1>
         <div class="post-info">
           <div class="info">
             攻略：
             <span>2019-05-22</span>
             <span class="time">10:57</span>
-            <span class="read">阅读：10438</span>
+            <span class="read">阅读：{{item.watch || 0}}</span>
           </div>
         </div>
         <!-- 这里是文章详细内容 -->
-        <div class="content">
-          <p
+        <div class="content" v-html="item.content">
+          <!-- <p
             class="introduce"
           >大家对塞班岛总存在着这样的误解，知道它是美属地盘，就理所当然地觉得这里的花费一定很高，花费高有高的玩法，那如果只有6000块的预算呢？要怎么玩？关于旅行这件事，我们要让钱花得更有道理，收下这份攻略，带你6000块花式玩转塞班。</p>
           <div class="picture">
@@ -36,13 +36,13 @@
           <div class="methods">
             <h3>1.怎样订机票+酒店性价比最高？</h3>
             <p class="how-to-do"></p>
-          </div>
+          </div>-->
         </div>
         <!-- 这里是评论、收藏、分享、赞模块 -->
         <div class="post-ctrl">
           <div class="comments">
             <span class="el-icon-edit-outline"></span>
-            <p>评论（100）</p>
+            <p>评论（{{item.comments.length || 0 }}）</p>
           </div>
           <div class="collection">
             <span class="el-icon-star-off"></span>
@@ -54,7 +54,7 @@
           </div>
           <div class="dianzan">
             <span class="el-icon-present"></span>
-            <p>点赞（19）</p>
+            <p>点赞（{{item.like || 0}}）</p>
           </div>
         </div>
         <!-- 这里引入评论组件 -->
@@ -62,27 +62,15 @@
       </div>
       <div class="right">
         <h4>相关攻略</h4>
-        <div class="strategy-item">
-          <a href="javascript:;">
-            <img src="@/static/images/aoteman1.jpg" alt />
+        <div class="strategy-item" v-for="(item,index) in strategies" :key="index">
+          <a :href="`http://localhost:3000/post/detail?id=${item.id}`">
+            <img :src="item.images[0]" v-if="item.images[0]" alt />
+            <img src="@/static/images/aoteman1.jpg" v-else alt />
             <div class="item-right">
-              <div class="content">1121323</div>
+              <div class="content">{{item.title}}</div>
               <div class="bottom">
                 <span class="time">2019-11-19 8:00</span>
-                <span>阅读 4</span>
-              </div>
-            </div>
-          </a>
-        </div>
-
-        <div class="strategy-item">
-          <a href="javascript:;">
-            <img src="@/static/images/aoteman1.jpg" alt />
-            <div class="item-right">
-              <div class="content">1121323</div>
-              <div class="bottom">
-                <span class="time">2019-11-19 8:00</span>
-                <span>阅读 4</span>
+                <span>阅读 {{item.watch || 0}}</span>
               </div>
             </div>
           </a>
@@ -102,6 +90,37 @@ export default {
     Header,
     Footer,
     Comments
+  },
+  data() {
+    return {
+      postsDetail: [], //文章详情
+      strategies: [] //相关攻略
+    };
+  },
+  mounted() {
+    // 获取文章详情
+    const id = this.$route.query.id;
+    this.$axios({
+      url: "/posts",
+      method: "get",
+      params: {
+        id
+      }
+    }).then(res => {
+      console.log(res.data);
+      const { data } = res.data;
+      this.postsDetail = data;
+    });
+    // 相关攻略
+    this.$axios({
+      url: "/posts/recommend",
+      method: "get"
+      // data:{},
+    }).then(res => {
+      console.log(res);
+      const { data } = res.data;
+      this.strategies = data;
+    });
   }
 };
 </script>
@@ -143,22 +162,25 @@ export default {
       }
     }
   }
-  .introduce {
-    line-height: 1.5;
-  }
-  .picture {
-    margin: 10px 0;
-    img {
-      width: 700px;
-    }
-    span {
-      color: #999;
-    }
-  }
-  .play {
-    margin-bottom: 30px;
-    .play-introduce {
+  .content {
+    width: 700px;
+    /deep/p {
       line-height: 1.5;
+      /deep/img {
+        width: 700px !important;
+        height: 340px;
+        object-fit: cover;
+        margin: 10px 0;
+        // background-size: cover;
+      }
+    }
+    /deep/span {
+      /deep/img {
+        width: 700px !important;
+        height: 340px;
+        object-fit: cover;
+        margin: 10px 0;
+      }
     }
   }
 
