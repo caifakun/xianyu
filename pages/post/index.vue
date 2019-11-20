@@ -153,7 +153,7 @@ export default {
         method: "get",
         params: this.page
       }).then(res => {
-        // console.log(res.data);
+        console.log(res.data);
         this.total = res.data.total;
         const { data } = res.data;
         this.postList = data;
@@ -180,7 +180,7 @@ export default {
       url: "/posts/cities",
       method: "get"
     }).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       const { data } = res.data;
       this.cities = data;
     });

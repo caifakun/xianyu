@@ -2,12 +2,12 @@
   <div class="content">
     <div class="moreImg" v-if="data.images.length >= 3">
       <h4 class="title-txt">
-        <a href="#">{{data.title}}</a>
+        <a href="javascript:;" @click="jumpDetail">{{data.title}}</a>
       </h4>
       <p class="posts">
-        <a href="#">{{data.summary | change}}</a>
+        <a href="javascript:;" @click="jumpDetail">{{data.summary | change}}</a>
       </p>
-      <a href="#" class="more-img">
+      <a href="javascript:;" class="more-img" @click="jumpDetail">
         <!-- <img src="/static/images/saiban.jpeg" alt />
         <img src="@/static/images/6@2x.png" alt />
         <img src="@/static/images/eating.jpeg" alt />-->
@@ -21,7 +21,7 @@
             <i class="el-icon-location-outline"></i>
             {{data.cityName}}
           </span>
-          <a href="#" class="user">
+          <a href="javascript:;" class="user">
             by
             <!-- <img src="@/static/images/avatar.jpg" alt /> -->
             <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
@@ -36,16 +36,16 @@
       </div>
     </div>
     <div class="oneImg" v-if="data.images.length >= 0 && data.images.length <3">
-      <a href="#">
+      <a href="javascript:;" @click="jumpDetail">
         <img :src="data.images[0]" alt v-if="data.images[0]" />
         <img src="@/static/images/aoteman1.jpg" alt v-else />
       </a>
       <div class="right">
         <h4 class="title-txt">
-          <a href="#">{{data.title}}</a>
+          <a href="javascript:;" @click="jumpDetail">{{data.title}}</a>
         </h4>
         <p class="posts">
-          <a href="#">{{data.summary | change}}</a>
+          <a href="javascript:;" @click="jumpDetail">{{data.summary | change}}</a>
         </p>
         <div class="userInfo">
           <div class="left">
@@ -53,7 +53,7 @@
               <i class="el-icon-location-outline"></i>
               {{data.cityName}}
             </span>
-            <a href="#" class="user">
+            <a href="javascript:;" class="user">
               by
               <img :src="$axios.defaults.baseURL+data.account.defaultAvatar" alt />
               <span class="username">{{data.account.nickname}}</span>
@@ -77,7 +77,17 @@ export default {
     change(value) {
       return value.replace(/&nbsp;/g, "");
     }
-  }
+  },
+  methods: {
+    jumpDetail(){
+      this.$router.push({
+        path:'/post/detail',
+        query:{
+          id :this.data.id
+        }
+      })
+    }
+  },
 };
 </script>
 
