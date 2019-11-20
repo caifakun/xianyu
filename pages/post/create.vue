@@ -64,19 +64,10 @@
 <script>
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
-// 引入富文本插件
-let VueEditor;
-
-if (process.browser) {
-  let editor = require("vue2-editor").default;
-  VueEditor = editor.VueEditor;
-}
-
 export default {
   components: {
     Header,
     Footer,
-    VueEditor
   },
   data() {
     return {
