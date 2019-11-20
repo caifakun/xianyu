@@ -12,8 +12,7 @@
         <div class="post-info">
           <div class="info">
             攻略：
-            <span>2019-05-22</span>
-            <span class="time">10:57</span>
+            <span class="time">{{item.createdTime}}</span>
             <span class="read">阅读：{{item.watch || 0}}</span>
           </div>
         </div>
@@ -58,7 +57,7 @@
           </div>
         </div>
         <!-- 这里引入评论组件 -->
-        <Comments />
+        <Comments :data="item"/>
       </div>
       <div class="right">
         <h4>相关攻略</h4>
@@ -69,7 +68,7 @@
             <div class="item-right">
               <div class="content">{{item.title}}</div>
               <div class="bottom">
-                <span class="time">2019-11-19 8:00</span>
+                <span class="time">{{item.createdTime}}</span>
                 <span>阅读 {{item.watch || 0}}</span>
               </div>
             </div>
@@ -85,6 +84,8 @@
 import Header from "@/components/header.vue";
 import Footer from "@/components/footer.vue";
 import Comments from "@/components/post/comments.vue";
+// 引入moment插件
+import moment from "moment";
 export default {
   components: {
     Header,
@@ -109,6 +110,13 @@ export default {
     }).then(res => {
       console.log(res.data);
       const { data } = res.data;
+      data.forEach(e => {
+        var time = moment(e.created_at).format("YYYY-MM-DD HH:mm");
+        e.createdTime = time;
+        e.comments.forEach(item=>{
+          item.createdTime = time;
+        })
+      });
       this.postsDetail = data;
     });
     // 相关攻略
@@ -117,8 +125,12 @@ export default {
       method: "get"
       // data:{},
     }).then(res => {
-      console.log(res);
+      // console.log(res);
       const { data } = res.data;
+      data.forEach(e => {
+        let time = moment(e.created_at).format("YYYY-MM-DD HH:mm");
+        e.createdTime = time;
+      });
       this.strategies = data;
     });
   }
@@ -158,7 +170,7 @@ export default {
       float: right;
       color: #999;
       .time {
-        margin: 0 20px 0 10px;
+        margin-right: 20px;
       }
     }
   }
