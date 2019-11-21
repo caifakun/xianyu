@@ -19,7 +19,6 @@
           :on-preview="handlePictureCardPreview"
           :on-remove="handleRemove"
           :on-success="handleSuccess"
-          
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -37,7 +36,7 @@
     <div class="comments-content">
       <div
         class="comment-item"
-        v-for="(item,index) in commentsList.data"
+        v-for="(item,index) in commentsList"
         :key="index"
         @mouseenter="show(index)"
         @mouseleave="leave(index)"
@@ -51,11 +50,16 @@
           </div>
           <span class="number">{{item.level}}</span>
         </div>
-        <CommentsFloor :data="item" />
+        <CommentsFloor :item="item" @replay="replay" />
         <div class="item-content">
           <div class="text">{{item.content}}</div>
-          <div class="picture" v-if="item.pics" >
-            <img v-for="(e,i) in item.pics" :key="i" :src="`${$axios.defaults.baseURL}${e.url}`" alt="">
+          <div class="picture" v-if="item.pics">
+            <img
+              v-for="(e,i) in item.pics"
+              :key="i"
+              :src="`${$axios.defaults.baseURL}${e.url}`"
+              alt
+            />
           </div>
           <span
             class="replay"
@@ -115,7 +119,6 @@ export default {
     show(index) {
       this.current = index;
       this.isShow = true;
-      console.log(123);
     },
     // 隐藏回复按钮
     leave(index) {
@@ -132,7 +135,6 @@ export default {
 
       // this.form.pics = this.fileList;
       // console.log( this.fileList);
-      
     },
     // 移除图片
     handleRemove(file, fileList) {
@@ -157,34 +159,40 @@ export default {
             this.$message.success("发布评论成功");
             this.form.content = "";
             this.fileList = [];
+            this.getComment();
           }
         });
       }
-      
-      // else {
-      //   this.$message.error("请输入内容");
-      // }
     },
     // 回复评论
     replayComment(id) {
       this.$refs.textarea.focus();
-      
       this.form.follow = id;
       this.postComment();
+    },
+    // 递归回复
+    replay(id) {
+      this.$refs.textarea.focus();
+      this.form.follow = id;
+      // this.form.follow = id;
+      this.postComment();
+    },
+    // 获取评论
+    getComment() {
+      this.$axios({
+        url: "/posts/comments",
+        params: {
+          post: this.form.post
+        }
+      }).then(res => {
+        // console.log(res);
+        this.commentsList = res.data.data;
+        console.log(this.commentsList);
+      });
     }
   },
   mounted() {
-    // 获取评论
-    this.$axios({
-      url: "/posts/comments",
-      params: {
-        post: this.form.post
-      }
-    }).then(res => {
-      // console.log(res);
-      this.commentsList = res.data;
-      console.log(this.commentsList);
-    });
+    this.getComment();
   }
 };
 </script>
@@ -284,9 +292,9 @@ export default {
           text-decoration: underline;
         }
       }
-      .picture{
+      .picture {
         margin-top: 10px;
-        img{
+        img {
           padding: 5px;
           width: 80px;
           height: 80px;
