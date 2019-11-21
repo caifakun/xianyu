@@ -70,6 +70,18 @@
         </div>
       </div>
     </div>
+    <!-- 引入分页模块 -->
+    <div class="block">
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[3, 5, 8, 10]"
+        :page-size="3"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
+    </div>
   </div>
 </template>
 
@@ -111,7 +123,15 @@ export default {
 
       // 用于设置回复按钮
       current: null,
-      isShow: false
+      isShow: false,
+
+      // 用于分页
+      currentPage: 1,
+      total:0,
+      page: {
+        _start: 0, //数据从那条开始
+        _limit: 3 //获取的条数
+      }
     };
   },
   methods: {
@@ -182,11 +202,29 @@ export default {
       this.$axios({
         url: "/posts/comments",
         params: {
-          post: this.form.post
+          post: this.form.post,
+          _start: this.page._start,
+          _limit: this.page._limit
         }
       }).then(res => {
+        console.log(res.data);
+        this.total = res.data.total;
         this.commentsList = res.data.data;
       });
+    },
+    // 改变获取条数
+    handleSizeChange(val) {
+      this.page._limit = val;
+      this.getComment();
+      // console.log(`每页 ${val} 条`);
+    },
+    // 改变页码
+    handleCurrentChange(val) {
+      let start = 0;
+      start += (val - 1) * this.page._limit; //1 3   2 6  3 9
+      this.page._start = start;
+      this.getComment();
+      // console.log(`当前页: ${val}`);
     }
   },
   mounted() {
