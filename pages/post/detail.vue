@@ -43,7 +43,7 @@
             <span class="el-icon-edit-outline"></span>
             <p>评论（{{item.comments.length || 0 }}）</p>
           </div>
-          <div class="collection" @click="collection">
+          <div class="collection yellow" @click="collection(item.id)">
             <span class="el-icon-star-off"></span>
             <p>收藏</p>
           </div>
@@ -51,7 +51,7 @@
             <span class="el-icon-share"></span>
             <p>分享</p>
           </div>
-          <div class="dianzan" @click="dianzan(item.id)" :class="{yellow:isDianZan == item.id}">
+          <div class="dianzan yellow" @click="dianzan(item.id)">
             <span class="el-icon-present"></span>
             <p>点赞（{{item.like || 0}}）</p>
           </div>
@@ -96,7 +96,6 @@ export default {
     return {
       postsDetail: [], //文章详情
       strategies: [], //相关攻略
-      isDianZan: null
     };
   },
   methods: {
@@ -117,11 +116,30 @@ export default {
         if (message == "点赞成功") {
           this.$message.success(message);
           this.postsDetail[0].like += 1;
-          this.isDianZan = id;
         }
       });
     },
-   
+    // 收藏文章
+    collection(id) {
+      this.$axios({
+        url: "/posts/star",
+        method: "get",
+        params: {
+          id
+        },
+        headers: {
+          // Bearer属于jwt的token标准
+          Authorization: "Bearer " + this.$store.state.user.userInfo.token
+        }
+      }).then(res => {
+        // console.log(res);
+        const { message } = res.data;
+        if (message == "收藏成功") {
+          this.$message.success(message);
+          this.item.isCollection = true;
+        }
+      });
+    },
   },
   mounted() {
     // 获取文章详情
@@ -136,8 +154,10 @@ export default {
       console.log(res.data);
       const { data } = res.data;
       data.forEach(e => {
+        // 这里是修改时间
         var time = moment(e.created_at).format("YYYY-MM-DD HH:mm");
         e.createdTime = time;
+
         e.comments.forEach(item => {
           item.createdTime = time;
         });
@@ -287,6 +307,9 @@ export default {
   }
 }
 .yellow {
+  color: #ffa500;
+}
+.shouchang {
   color: #ffa500;
 }
 </style>
