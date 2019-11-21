@@ -185,9 +185,7 @@ export default {
           post: this.form.post
         }
       }).then(res => {
-        // console.log(res);
         this.commentsList = res.data.data;
-        console.log(this.commentsList);
       });
     }
   },
